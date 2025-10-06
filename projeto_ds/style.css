@@ -1,0 +1,163 @@
+body{
+    margin: 0px;
+    padding: 0px;
+    background: linear-gradient(to bottom, #E0F2FE, rgb(255, 255, 255));
+    height: 100vh;
+    font-family: "Roboto";
+}
+
+header{
+    margin: 72px auto 135px auto;
+    max-width: 1400px;
+}
+
+main{
+    margin: 0px auto 0px auto;
+    max-width: 1400px;
+}
+
+.barra_externa_navegação{
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+
+    margin: 0px 100px;
+    padding: 0px;
+}
+
+.barra_externa_navegação > li > a{
+    text-decoration: none;
+    color: black;
+    font-size: 1.2em;
+}
+
+#logo_lumi{
+    flex-basis: 140px;
+    flex-grow: 0;
+}
+
+#logo_lumi > img{
+    width: 100%;
+}
+
+#novo_roteiro_menu_superior{
+    background-color: #22C55E;
+    border-radius: 4px;
+    padding: 10px 25px;
+    color: white;
+}
+
+.barra_interna_navegação{
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: 8.5em;
+
+    margin: 0px;
+    padding: 0px;
+}
+
+.barra_interna_navegação > li > a{
+    text-decoration: none;
+    color: black;
+    font-size: 0.9em;
+}
+
+
+
+/*
+
+    PARTE RELACIONADA A PEDIR O CRONOGRAMA
+
+*/
+
+
+
+#container_gerar_roteiro{
+    width: 92%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    gap: 0em;
+}
+
+#container_gerar_roteiro > section{
+    flex-basis: 500px;
+}
+
+.caixa_informacao_roteiro{
+    display: flex;
+    flex-direction: column;
+}
+
+.caixa_informacao_roteiro > h1{
+    font-weight: bold;
+    font-size: 2.2em;
+    margin: 0px;
+}
+
+.container_caixas_input{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 55%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 6px;
+    padding: 10px 16px;
+
+    box-shadow: -1px 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.caixa_input_roteiro{
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    align-items: center;
+    height: 2.6em;
+
+    border: 1px solid rgba(128, 128, 128, 0.55);
+    padding: 2px 4px;
+    border-radius: 10px;
+}
+
+.caixa_input_roteiro > input{
+    height: 2em;
+    width: 80%;
+    height: 100%;
+    border: none;
+}
+
+.caixa_input_roteiro > input{
+    height: 2em;
+    width: 80%;
+    height: 100%;
+    border: none;
+}
+
+.caixa_input_roteiro > input:focus{
+    outline: none;
+}
+
+.caixa_input_roteiro > span{
+    color: rgba(78, 78, 78, 0.9); 
+}
+
+#botao_gerar_roteiro{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1.05em;
+    text-decoration: none;
+    height: 45px;
+    color: white;
+    background-color: #22C55E;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.iamgem_gerar_roteiro{
+    width: 100%;
+    flex-grow: 0;
+    display: block;
+}

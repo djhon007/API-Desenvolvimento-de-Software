@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+
+
+<body>
+    
+    <header> <!-- Cabeçario do site -->
+        <nav> <!-- Barra de navegação superior -->
+            <ul class="barra_externa_navegação">
+
+                <li id="logo_lumi" ><img src="imagens/logo_lumi.png" alt="Logo"></li>
+
+                <ul class="barra_interna_navegação">
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#">Histórico</a></li>
+                    <li><a href="#">Perfil</a></li>
+                </ul>
+
+                <li><a id="novo_roteiro_menu_superior" href="#">+ Novo Roteiro</a></li>
+
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article id="container_gerar_roteiro">
+
+            <section class="caixa_informacao_roteiro"> <!-- caixa que vai conter a parte de criação do reteiro de estudos -->
+
+                <h1>Transforme a ansiedade<br>em planos claros de estudos</h1>
+
+                <p>Organize seus estudos em segundos com o Lumin!</p>
+
+                <div class="container_caixas_input"> <!-- div que vai conter a parte de colocar o tópico e prazo para gerar o cronograma -->
+                    <div class="caixa_input_roteiro"> <!-- caixa tópico -->
+                        <span class="material-symbols-outlined icone_ciaxa_input">menu_book</span>
+                        <label for="Topico_estudo"></label>
+                        <input type="text" id="Topico_estudo" name="Topico_estudo" placeholder="Tópico de estudo">
+                    </div>
+
+                    <div class="caixa_input_roteiro"> <!-- caixa prazo -->
+                        <span class="material-symbols-outlined ">schedule</span>
+                        <label for="prazo"></label>
+                        <input type="text" id="Prazo" name="prazo" placeholder="Prazo">
+                    </div>
+
+                    <a id="botao_gerar_roteiro" href="#">Gerar Roteiro</a>
+                </div>
+
+            </section>
+
+            <section> <!-- imagem que fica ao lado da parte de gerar o roteiro -->
+
+                <img class="iamgem_gerar_roteiro" src="imagens/Left hander-cuate_mod (1).png" alt="Imagem">
+
+            </section>
+
+        </article>
+    </main>
+
+    <footer>
+        
+    </footer>
+
+    <!-- (gabriel) comunicar com o arquivo .js -->
+
+    <script src="script.js"></script>
+
+
+</body>
+
+
+</html>
+
+<!-- para fazer funcionar, colocar no terminal: python3 -m http.server -->
