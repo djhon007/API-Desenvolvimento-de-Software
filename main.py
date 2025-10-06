@@ -2,9 +2,22 @@ from google import genai
 from pydantic import BaseModel
 import os
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 #inciializado o fastapi
 app = FastAPI()
+
+#LIBERANDO O FRONT
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8000"], 
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 #incializando o cliente gemini
 client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
@@ -115,6 +128,12 @@ Retorne **somente o JSON**, nada mais.
     # o FastAPI converte automaticamente esse dicionário em JSON antes de enviar ao front-end
     return {"agenda": [a.dict() for a in agenda]}
     
+
+    #para criar ambiente virtual
+    #1- python3 -m venv venv
+    #2-source venv/bin/activate
+
+
 
     #para testar: 
     #1- inicializar a chave da api: export GENAI_API_KEY="sua_chave_aqui"
