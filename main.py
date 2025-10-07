@@ -126,7 +126,7 @@ Retorne **somente o JSON**, nada mais.
     # 1- python3 -m venv venv
     # 2-source venv/bin/activate
 
-    #bibliotecas: pip install fastapi uvicorn google-genai python-dotenv pydantic
+    #bibliotecas: Colocar no terminal do ambiente virtual: pip install fastapi uvicorn google-genai python-dotenv pydantic
 
     # para testar:
     # 1- criar arquivo .env, e digitar exatamente isso: GENAI_API_KEY="sua_chave_aqui"
