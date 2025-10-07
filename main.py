@@ -1,68 +1,67 @@
 from google import genai
 from pydantic import BaseModel
+from dotenv import load_dotenv
 import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+# carrega o arquivo .env logo no início
+load_dotenv()
 
-
-#inciializado o fastapi
+# inciializado o fastapi
 app = FastAPI()
 
-#LIBERANDO O FRONT
+# LIBERANDO O FRONT
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000"], 
+    allow_origins=["http://localhost:8080", "http://127.0.0.1:8080"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-#incializando o cliente gemini
+# incializando o cliente gemini
 client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 
 
-#modelos de entrada e de saída
+# modelos de entrada e de saída
 class Entrada(BaseModel):
     topico_de_estudo: str
     prazo: str
 
-    #Função que extrai o número (quantidade) do campo "prazo"
-    @property
+    #organizando prazo(numero)
     def prazo_numero(self):
-        import re  # Importa o módulo de expressões regulares (regex), usado para buscar padrões em texto
-
-        # Procura na string 'self.prazo' uma sequência de um ou mais dígitos (0–9)
-        match = re.search(r"\d+", self.prazo) # Procura na string 'self.prazo' uma sequência de um ou mais dígitos (0–9)
-
-        # Se encontrou um número, converte para inteiro e retorna
-        # Caso contrário (ex: se o usuário digitou algo sem número), retorna 0 por padrão
+        import re
+        #procura na string uma sequencia de um ou mais digitos de 0 - 9
+        match = re.search(r"\d+", self.prazo)
+        #se achou, retorna o numero em formarto de int, caso contrario, retorna 0
         return int(match.group()) if match else 0
-    # 🔹 Propriedade que extrai a unidade de tempo (palavra) do campo "prazo"
-    @property
+
+    #organizando prazo(palavras)
     def prazo_palavra(self):
-        import re  # Importa novamente o módulo de expressões regulares
-
-        # Procura na string 'self.prazo' uma sequência de letras (A-Z ou com acento)
+        import re
+        #procura letras maiusculas e minusculas, com acento ou sem
         match = re.search(r"[A-Za-zÀ-ÿ]+", self.prazo)
-
-        # Se encontrou uma palavra, transforma em minúsculas e retorna, se nao encontrou, retorna "dias" como valor padrão
+        #se achou, retorna a palavra, caso contrario retorna "dias"
         return match.group().lower() if match else "dias"
-    
-    #padronizando prazos para dias
-    def prazo_em_dias(self):
-        if self.prazo_palavra == "semanas" or self.prazo_palavra == "semana":
-           return self.prazo_numero *7
-        elif self.prazo_palavra == "meses" or self.prazo_palavra == "mes" or self.prazo_palavra == "mês":
-            return self.prazo_numero * 30
-        else:
-            return self.prazo_numero
 
+    #padroniza a unidade de medida para dias
+    def prazo_em_dias(self):
+        palavra = self.prazo_palavra()  
+        numero = self.prazo_numero()    
+
+        if palavra in ["semana", "semanas"]:
+            return numero * 7
+        elif palavra in ["mes", "mês", "meses"]:
+            return numero * 30
+        else:
+            return numero
 
 
 class Saída(BaseModel):
     dias_de_estudo: list[str]
+
 
 @app.post("/gerar-agenda")
 def gerar_agenda(req: Entrada):
@@ -102,41 +101,36 @@ Formato esperado (exemplo para 3 dias):
 Retorne **somente o JSON**, nada mais.
 """
 
-
-
-
-
-
     response = client.models.generate_content(
-    model="gemini-2.5-flash",
-    #prompt que eu criei
-    contents= prompt, 
-    config={
-        "response_mime_type": "application/json",
-        "response_schema": list[Saída], #ensina ao gemini a transformar esse JSON em uma lista de objetos python do tipo rotina
-    },
+        model="gemini-2.5-flash",
+        # prompt que eu criei
+        contents=prompt,
+        config={
+            "response_mime_type": "application/json",
+            # ensina ao gemini a transformar esse JSON em uma lista de objetos python do tipo rotina
+            "response_schema": list[Saída],
+        },
     )
 
-    #converte a resposta da API em uma lista de objetos Rotina para facilitar o acesso aos dados.
+    # converte a resposta da API em uma lista de objetos Rotina para facilitar o acesso aos dados.
     agenda: list[Saída] = response.parsed
 
     # retorna a resposta final para o front-end em formato JSON
-    # cada item em 'agenda' é um objeto Pydantic do tipo 'Saída'
-    # o método .dict() converte esses objetos em dicionários Python
-    # a list comprehension [a.dict() for a in agenda] cria uma lista com esses dicionários
-    # por fim, tudo é agrupado dentro de um dicionário com a chave "agenda"
-    # o FastAPI converte automaticamente esse dicionário em JSON antes de enviar ao front-end
+    # cada item em agenda é um objeto Pydantic do tipo Saída, o.dict() converte os objetos em dicionairo, e o metodo list (a.dict() for a ...) cria uma lista com os dicionarios
+    #tudo é agrupado dentro de um dicionário com a chave agenda
     return {"agenda": [a.dict() for a in agenda]}
+
     
+    
+    # para criar ambiente virtual
+    # 1- python3 -m venv venv
+    # 2-source venv/bin/activate
 
-    #para criar ambiente virtual
-    #1- python3 -m venv venv
-    #2-source venv/bin/activate
+    #bibliotecas: pip install fastapi uvicorn google-genai python-dotenv pydantic
 
-
-
-    #para testar: 
-    #1- inicializar a chave da api: export GENAI_API_KEY="sua_chave_aqui"
-    #2- colocar isso no terminal: uvicorn main:app --reload
-    #3- abrir esse link: http://127.0.0.1:8000/docs
+    # para testar:
+    # 1- criar arquivo .env, e digitar exatamente isso: GENAI_API_KEY="sua_chave_aqui"
+    # 2- colocar isso no terminal: uvicorn main:app --reload (verificar se o terminal esta rodando dentro do caminho certo para a pasta que está o main.py)
+    # 3- inicalizar o front: criar um novo terminal, e colocar isso nele(verificar se o terminal está na pasta "frontend"): python3 -m http.server 8080
+    # 4- depois que inicializou o front: abrir esse link: http://127.0.0.1:8080
 
