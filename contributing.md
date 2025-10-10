@@ -14,7 +14,7 @@ Para começar a desenvolver, siga os passos abaixo:
 
 **Pré-requisitos:**
 * Python 3.10
-* Bibliotecas: Pydantic, google, fastapi
+* Bibliotecas: Pydantic, google, fastapi, goole-generativeai
 
 **Instalação:**
 1.  Clone o repositório para sua máquina:
@@ -32,7 +32,20 @@ Para começar a desenvolver, siga os passos abaixo:
     ```
 5.  Instale as dependências:
     ```bash
-    pip install pydantic google-generativeai fastapi
+    pip install pydantic google-generativeai fastapi google
     ```
-
+6. Crie um arquivo ".env" na pasta do projeto e inserir uma chave de API gemini válida
+```bash
+    GENAI+API+KEY="sua_chave_aqui"
+```
+7. Digite no terminal o seguinte comando:
+   ```bash
+    uvicorn main:app --reload
+    ```
+8. Abra um outro terminal na pasta "frontend" e digite o comando:
+   ```bash
+    python3 -m http.server 8080
+    ```
+9. Abrir o link:
+    http://127.0.0.1:8080
 **Comandos Úteis:**
