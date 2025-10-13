@@ -31,9 +31,13 @@ Para começar a desenvolver, siga os passos abaixo:
    ```bash
     python -m venv env
     ```
+4. Ative um ambiente virtual(no Linux)
+   ```bash
+    source venv/bin/activate
+    ```
 5.  Instale as dependências:
     ```bash
-    pip install pydantic google-generativeai fastapi google
+    pip install fastapi uvicorn google-genai python-dotenv pydantic
     ```
 6. Crie um arquivo ".env" na pasta do projeto e inserir uma chave de API gemini válida
 ```bash
