@@ -42,7 +42,7 @@ Para começar a desenvolver, siga os passos abaixo:
     ```
 6. Crie um arquivo ".env" na pasta do projeto e inserir uma chave de API gemini válida
 ```bash
-    GENAI+API+KEY="sua_chave_aqui"
+    GENAI_API_KEY="sua_chave_aqui"
 ```
 7. Digite no terminal o seguinte comando:
    ```bash
