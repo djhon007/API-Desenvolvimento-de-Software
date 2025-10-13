@@ -7,6 +7,7 @@ Por favor, leia e use-o como referência.
 ## Sumário
 1.  [Configuração do Ambiente Local](#1-configuração-do-ambiente-local)
 2.  [Passo a passo: Como abrir uma issue no repositório](#2-passo-a-passo-como-abrir-uma-issue-no-repositório)
+3.  [Convenções para versionamento](#3-convenções-para-versionamento)
 ---
 
 ### 1. Configuração do Ambiente Local
@@ -81,3 +82,5 @@ Sugestão: adicionar botão de logout
 4. (Opcional) Adicione labels como bug, enhancement, question, se você tiver permissão.
 
 5. Clique em "Submit new issue" para criar a issue.
+
+### 3. Convenções para versionamento
