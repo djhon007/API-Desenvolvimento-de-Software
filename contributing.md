@@ -84,3 +84,70 @@ Sugestão: adicionar botão de logout
 5. Clique em "Submit new issue" para criar a issue.
 
 ### 3. Convenções para versionamento
+
+#### Baseia-se na lógica de "Conventional Commits":
+
+## Formato:
+
+```bash
+<type>[optional scope]: <description> #tipo de commit, escopo e descrição
+
+[optional body] #corpo opcional com maior descrição
+
+[optional footer(s)] #opcional para incluir BREAKING CHANGES
+```
+
+## Tipos:
+
+Tipo	Uso
+
+1. feat:	nova funcionalidade
+
+2. fix:	correção de bug
+
+3. docs:	mudanças em documentação
+
+4. style:	ajustes de formatação, espaçamento, etc (sem alterar lógica)
+
+5. refactor:	melhoria no código sem mudar comportamento
+
+6. test:	adição ou correção de testes
+
+7. chore:	tarefas auxiliares (build, CI/CD, configs)
+
+8. perf:	otimizações de desempenho
+
+9. ci:	ajustes no pipeline (GitHub Actions, Render, etc)
+
+### Exemplos:
+
+feat/login-flow
+
+fix/signup-validation
+
+refactor/ui-components
+
+chore/add-ci-workflow
+
+
+## Checklist de qualidade antes de commit/push
+
+1. Código executa localmente sem erros
+
+2. Nenhum console.log ou print desnecessário
+
+3. Arquivos .env, _pycache_, node_modules estão no .gitignore
+
+4. Mensagem de commit segue o padrão
+
+5. Branch tem nome descritivo
+
+## Regras gerais
+
+1. Cada branch deve tratar uma única mudança ou funcionalidade.
+
+2. Antes de criar uma branch, puxe as atualizações da main (git pull origin main).
+
+3. Após finalizar e testar localmente, abra um Pull Request descrevendo a mudança.
+
+4. O merge deve ser feito apenas após revisão e aprovação.
