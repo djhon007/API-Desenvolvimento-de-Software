@@ -8,6 +8,7 @@ Por favor, leia e use-o como referência.
 1.  [Configuração do Ambiente Local](#1-configuração-do-ambiente-local)
 2.  [Passo a passo: Como abrir uma issue no repositório](#2-passo-a-passo-como-abrir-uma-issue-no-repositório)
 3.  [Convenções para versionamento](#3-convenções-para-versionamento)
+4.  [Processo de Pull Request (PR)](#4-processo-de-pull-request-pr)
 ---
 
 ### 1. Configuração do Ambiente Local
@@ -151,3 +152,56 @@ chore/add-ci-workflow
 3. Após finalizar e testar localmente, abra um Pull Request descrevendo a mudança.
 
 4. O merge deve ser feito apenas após revisão e aprovação.
+
+### 4. Processo de Pull Request (PR)
+O Pull Request (PR) é como você propõe suas mudanças ao repositório principal. É uma oportunidade para revisar o código e discutir as alterações antes de integrá-las à branch main.
+
+Preparação para o PR
+Atualize sua Base: Antes de enviar seu código, certifique-se de que sua branch main local está atualizada com a main remota:
+
+```Bash
+
+git checkout main
+git pull origin main
+```
+Traga as Atualizações: Volte para sua branch de funcionalidade e traga as atualizações da main (caso haja alguma). Isso ajuda a evitar conflitos de merge.
+
+```Bash
+
+git checkout sua-branch
+git rebase main 
+# ou 'git merge main', dependendo do fluxo de trabalho preferido
+```
+Revise seu Trabalho: Verifique seu código pela última vez usando o Checklist de qualidade (descrito na Seção 3). Garanta que os testes passam localmente e que não há prints ou console.logs desnecessários.
+
+Abrindo o Pull Request
+Envie sua Branch: Suba sua branch para o repositório remoto:
+
+```Bash
+
+git push origin nome-da-sua-branch
+```
+Abra o PR: Vá até a página do repositório no GitHub. Você verá um aviso para abrir um Pull Request da sua branch recém-enviada. Clique nele.
+
+#### Preencha o Template do PR: A clareza é fundamental.
+
+Título: O título do PR deve ser claro e, idealmente, seguir o padrão de Conventional Commits (ex: feat: Adiciona rota de login ou fix: Corrige validação de e-mail).
+
+Descrição: Use o corpo do PR para detalhar o que foi feito. Um bom formato inclui:
+
+O que este PR faz? (Descreva as mudanças em alto nível.)
+
+Por que esta mudança é necessária? (Qual problema ela resolve?)
+
+Como testar? (Liste os passos para que o revisor possa validar sua implementação.)
+
+Vincule a Issue: Se o seu PR resolve uma Issue existente (da Seção 2), use palavras-chave na descrição para vinculá-la.
+
+Exemplo: Resolve #42 ou Fecha #15.
+
+Revisão e Merge
+Aguarde a Revisão: Um ou mais membros da equipe revisarão seu código.
+
+Responda aos Feedbacks: É comum que os revisores solicitem alterações (ajustes de estilo, correções de lógica, mais testes). Faça os commits necessários na sua branch e envie-os (git push). O PR será atualizado automaticamente.
+
+Aprovação e Merge: Uma vez que o PR for aprovado e passar em quaisquer verificações automáticas (CI/CD), ele estará pronto para ser "mergeado" na main pelo mantenedor do projeto.
