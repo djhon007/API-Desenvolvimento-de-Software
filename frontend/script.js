@@ -1,4 +1,4 @@
-const URL = "http://127.0.0.1:8000/gerar-agenda";
+const URL = "http://127.0.0.1:8000/rotinas/gerar-agenda";
 
 
 
@@ -24,6 +24,7 @@ async function GerarAgenda(){
         },
         body: JSON.stringify(body)
     }
+    console.log(URL)
 
     //chamar o post na api
     const response = await fetch(URL,init)
