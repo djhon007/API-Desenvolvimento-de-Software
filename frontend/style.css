@@ -161,3 +161,235 @@ main{
     flex-grow: 0;
     display: block;
 }
+
+/*
+    NOVOS ESTILOS PARA O LOGIN (BASEADO NO FIGMA)
+*/
+
+/* Fundo especial para a página de login */
+.login-background {
+    /* O gradiente do teu design */
+    background: linear-gradient(135deg, #E0F2FE 0%, #dbefff 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ocupa a tela inteira */
+    font-family: 'Roboto', sans-serif;
+}
+
+/* O container principal que segura as duas colunas */
+.login-container {
+    display: flex;
+    width: 90%;
+    max-width: 1000px; /* Limita a largura máxima */
+    min-height: 600px;
+    background-color: #ffffff; /* Fundo branco para o card */
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Garante que as bordas arredondadas cortem o conteúdo */
+}
+
+/* 1. Coluna da Esquerda (Ilustração) */
+.login-illustration {
+    flex-basis: 50%; /* Ocupa 50% da largura */
+    background-color: #F0F9FF; /* Um azul muito claro, podes ajustar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.login-illustration img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* 2. Coluna da Direita (Formulário) */
+.login-form-wrapper {
+    flex-basis: 50%; /* Ocupa os outros 50% */
+    padding: 40px 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+/* O nosso formulário */
+#login-form {
+    width: 100%;
+}
+
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+}
+.form-header h1 {
+    font-size: 1.5em;
+    margin: 0;
+}
+.form-header .material-symbols-outlined {
+    font-size: 2em;
+    color: #0EA5E9; /* Um tom de azul, podes ajustar */
+}
+
+/* Títulos */
+.login-form-wrapper h2 {
+    font-size: 1.8em;
+    font-weight: 500;
+    color: #1E293B; /* Cor escura */
+    margin-top: 20px;
+    margin-bottom: 8px;
+}
+.login-form-wrapper p {
+    font-size: 1em;
+    color: #64748B; /* Cor cinza */
+    margin-bottom: 30px;
+}
+
+/* O grupo de input (ícone + campo) */
+.input-group {
+    position: relative; /* Essencial para posicionar o ícone */
+    margin-bottom: 20px;
+}
+
+.input-group .material-symbols-outlined {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94A3B8; /* Cinza do ícone */
+    pointer-events: none; /* Permite clicar "através" do ícone */
+}
+
+.input-group input {
+    width: 100%;
+    height: 50px;
+    padding: 0 20px 0 50px; /* Padding: topo, dir, baixo, ESQUERDA (para o ícone) */
+    font-size: 1em;
+    border: 1px solid #CBD5E1; /* Borda cinza clara */
+    border-radius: 8px;
+    box-sizing: border-box; /* Garante que o padding não mude a largura */
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #22C55E; /* Cor verde (do teu botão) */
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); /* Sombra suave ao focar */
+}
+
+/* Botão de Login (reutilizando a tua cor) */
+.btn-login {
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 8px;
+    background-color: #22C55E;
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+}
+.btn-login:hover {
+    background-color: #1FAA52;
+}
+
+/* Link de "Esqueci a senha" */
+.forgot-password {
+    display: block;
+    text-align: right;
+    margin-top: 12px;
+    font-size: 0.9em;
+    color: #22C55E;
+    text-decoration: none;
+}
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+/* Separador "ou" */
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #94A3B8;
+    margin: 25px 0;
+}
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #E2E8F0;
+}
+.separator:not(:empty)::before {
+    margin-right: .25em;
+}
+.separator:not(:empty)::after {
+    margin-left: .25em;
+}
+
+/* Botão de Google */
+.btn-google {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    background-color: #FFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 500;
+    color: #334155;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.btn-google:hover {
+    background-color: #F8FAFC; /* Cinza muito claro */
+}
+.btn-google img {
+    width: 20px; /* Tamanho do logo do Google */
+    height: 20px;
+}
+
+/* Link de "Cadastre-se" */
+.signup-link {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.95em;
+    color: #64748B;
+}
+.signup-link a {
+    color: #22C55E;
+    font-weight: 600;
+    text-decoration: none;
+}
+.signup-link a:hover {
+    text-decoration: underline;
+}
+
+#form-message {
+    font-size: 0.9em;
+    font-weight: 500;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#form-message.success {
+    background-color: #D1FAE5; /* Fundo verde claro */
+    color: #065F46; /* Texto verde escuro */
+}
+
+#form-message.error {
+    background-color: #FEE2E2; /* Fundo vermelho claro */
+    color: #991B1B; /* Texto vermelho escuro */
+}
