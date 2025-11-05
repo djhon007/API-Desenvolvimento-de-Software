@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumin - Criar Conta</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+</head>
+
+<body class="login-background">
+
+    <div class="login-container">
+
+        <section class="login-illustration">
+            <img src="imagens/ilustracao_login.png" alt="Ilustração de uma pessoa a estudar">
+        </section>
+
+        <section class="login-form-wrapper">
+            
+            <form id="registro-form">
+
+                <div class="form-header">
+                    <li id="logo_lumi" ><img src="imagens/logo_lumi.png" alt="Logo"></li>
+                </div>
+
+                <h2>Crie sua conta</h2>
+                <p>É rápido e fácil, comece a organizar-se agora!</p>
+
+                <div class="input-group">
+                    <span class="material-symbols-outlined">person</span>
+                    <input type="text" id="nome" placeholder="Nome completo" required>
+                </div>
+
+                <div class="input-group">
+                    <span class="material-symbols-outlined">mail</span>
+                    <input type="email" id="email" placeholder="E-mail" required>
+                </div>
+
+                <div class="input-group">
+                    <span class="material-symbols-outlined">lock</span>
+                    <input type="password" id="senha" placeholder="Senha" required>
+                </div>
+
+                <p id="form-message"></p>
+
+                <button type="submit" class="btn-login">Criar Conta</button>
+
+                <div class="separator"></div>
+
+                <p class="signup-link">
+                    Já tem uma conta? <a href="login.html">Faça login!</a>
+                </p>
+
+            </form>
+        </section>
+
+    </div>
+
+    <script src="registro.js"></script>
+
+</body>
+</html>

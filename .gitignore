@@ -1,0 +1,13 @@
+# Ignora o ficheiro de segredos (O MAIS IMPORTANTE)
+.env
+
+# Ignora a pasta inteira do ambiente virtual
+venv/
+env/
+
+# Ignora o cache do Python
+__pycache__/
+
+# Ignora o banco de dados
+banco.db
+*.db
