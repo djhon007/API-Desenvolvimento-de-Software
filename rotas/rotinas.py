@@ -141,3 +141,39 @@ async def listar_rotinas_usuario_logado(
         )
 
     return rotinas
+
+@rotinas_router.patch("/{rotina_id}/concluir", response_model=RotinaResponse)
+async def marcar_rotina_concluida(
+    rotina_id: int,
+    session: Session = Depends(pegar_sessao),
+    usuario: Usuario = Depends(verificar_token) # Usamos o token para saber QUEM está logado
+):
+    """
+    Marca uma rotina específica (pelo ID) como concluída.
+    """
+    
+    # 1. Busca a rotina no banco de dados
+    rotina = session.query(Rotina).filter(Rotina.id == rotina_id).first()
+
+    # 2. Se a rotina não existir, levanta um erro 404
+    if not rotina:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Rotina não encontrada."
+        )
+
+    # 3. Verifica se o usuário que está tentando modificar é o DONO da rotina
+    #    (Isso impede que o usuário A modifique a rotina do usuário B)
+    if rotina.id_usuario != usuario.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, # 403 = Proibido
+            detail="Você não tem permissão para modificar esta rotina."
+        )
+
+    # 4. Se tudo estiver certo, atualiza o campo e salva
+    rotina.concluido = True
+    session.commit()
+    session.refresh(rotina) # Atualiza o objeto com os dados do banco
+
+    # Retorna a rotina atualizada
+    return rotina
