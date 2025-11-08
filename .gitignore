@@ -2,11 +2,15 @@
 .env
 
 # Ignora a pasta inteira do ambiente virtual
+.venv/
 venv/
 env/
 
 # Ignora o cache do Python
 __pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # Ignora o banco de dados
 banco.db
