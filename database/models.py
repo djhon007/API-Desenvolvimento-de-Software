@@ -39,7 +39,7 @@ class Rotina(Base):
     titulo = Column("titulo", String)
     conteudo = Column("conteudo", String)
     criado_em = Column("criado_em", String)
-    concluido = Column("concluido", Boolean)
+    concluido = Column("concluido", Boolean, default=False)
 
     id_usuario = Column(Integer, ForeignKey("usuarios.id"))
     usuario = relationship("Usuario", back_populates="rotinas")
