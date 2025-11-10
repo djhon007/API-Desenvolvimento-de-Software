@@ -31,13 +31,17 @@ main{
     font-size: 1.2em;
 }
 
-#logo_lumi{
-    flex-basis: 140px;
-    flex-grow: 0;
+.barra_externa_navegação #logo_lumi {
+    width: 140px;    
+    height: auto;    
+    flex-grow: 0;    
 }
 
-#logo_lumi > img{
-    width: 100%;
+.form-header #logo_lumi {
+    width: 140px; 
+    height: auto; 
+    margin-bottom: 20px; 
+    flex-grow: 0;
 }
 
 #novo_roteiro_menu_superior{
