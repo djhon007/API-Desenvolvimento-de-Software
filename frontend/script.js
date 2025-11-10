@@ -27,6 +27,7 @@ async function GerarAgenda(){
         },
         body: JSON.stringify(body)
     }
+    console.log(URL)
 
     try {
         const response = await fetch(URL,init)
@@ -53,7 +54,7 @@ async function GerarAgenda(){
 
         // 2. Pega os dias de estudo da API
         // data.agenda[0].dias_de_estudo é o teu array de strings, ex: ["Dia 1: Tópico..."]
-        const dias = data.agenda[0].dias_de_estudo;
+        const dias = data.conteudo.split('\n');
 
         // 3. Cria o "card" principal que vai segurar tudo
         const roteiroCard = document.createElement("div");

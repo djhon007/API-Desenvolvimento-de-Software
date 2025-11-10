@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Planos - Lumin</title>
+    <!-- Importa a fonte Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Carrega o CSS customizado -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="pagina-historico">
+
+    <!-- Container principal que flexiona para manter o rodapé no lugar -->
+    <div class="main-container">
+        <div class="content-wrapper">
+            
+            <!-- Cabeçalho / Navegação -->
+            <header> 
+                <nav> 
+                    <ul class="barra_externa_navegação">
+
+                        <img id="logo_lumi" src="imagens/logo_lumi.png" alt="Logo">
+
+                        <ul class="barra_interna_navegação">
+                            <li><a href="index.html">Início</a></li>
+                            <li><a href="historico.html">Histórico</a></li>
+                            <li><a href="#">Perfil</a></li>
+                            <li><a href="#" id="logout-button">Sair</a></li> 
+                        </ul>
+
+                        <li><a id="novo_roteiro_menu_superior" href="index.html">+ Novo Roteiro</a></li>
+
+                    </ul>
+                </nav>
+            </header>
+
+            <!-- Conteúdo Principal -->
+            <main class="main">
+                
+                <!-- Título da Seção -->
+                <section class="section-title">
+                    <h1 class="page-title">Meus Planos</h1>
+                    <p class="page-subtitle">Acompanhe todos os roteiros que você já criou!</p>
+                </section>
+
+                <!-- Barra de Busca e Filtros -->
+                <section class="section-search">
+                    <div class="search-container">
+                        <!-- Busca -->
+                        <div class="search-input-wrapper">
+                            <span class="search-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                                </svg>
+                            </span>
+                            <input 
+                                type="text" 
+                                placeholder="Buscar plano..." 
+                                class="search-input"
+                            >
+                        </div>
+                        <!-- Filtro -->
+                        <button class="btn-filter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/>
+                                <line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/>
+                                <line x1="21" x2="16" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/>
+                                <line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/>
+                                <line x1="16" x2="16" y1="18" y2="22"/>
+                            </svg>
+                            <span>Filtros</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Grade de Planos -->
+                <section class="section-plans" id="grade-de-planos">
+                </section>
+            </main>
+        </div>
+
+        <!-- Rodapé -->
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Sobre</a>
+                    <a href="#" class="footer-link">Política de Privacidade</a>
+                    <a href="#" class="footer-link">Contato</a>
+                </div>
+                <p class="footer-text">Equipe ILuminados - CIn UFPE</p>
+            </div>
+        </footer>
+
+        <!-- Modal de Filtros -->
+        <div id="filter-overlay" class="filter-overlay hidden"></div>
+        <div id="filter-modal" class="filter-modal hidden">
+            <button id="filter-close-button" class="btn-close">&times;</button>
+            <!-- Conteúdo dos filtros aqui -->
+        </div>
+    </div>
+
+    <!-- Carrega o arquivo JavaScript -->
+    <script src="historico.js"></script>
+</body>
+</html>
