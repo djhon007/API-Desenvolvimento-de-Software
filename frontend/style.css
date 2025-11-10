@@ -162,37 +162,29 @@ main{
     display: block;
 }
 
-/*
-    NOVOS ESTILOS PARA O LOGIN (BASEADO NO FIGMA)
-*/
-
-/* Fundo especial para a página de login */
 .login-background {
-    /* O gradiente do teu design */
     background: linear-gradient(135deg, #E0F2FE 0%, #dbefff 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ocupa a tela inteira */
+    height: 100vh; 
     font-family: 'Roboto', sans-serif;
 }
 
-/* O container principal que segura as duas colunas */
 .login-container {
     display: flex;
     width: 90%;
-    max-width: 1000px; /* Limita a largura máxima */
+    max-width: 1000px; 
     min-height: 600px;
-    background-color: #ffffff; /* Fundo branco para o card */
+    background-color: #ffffff; 
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Garante que as bordas arredondadas cortem o conteúdo */
+    overflow: hidden; 
 }
 
-/* 1. Coluna da Esquerda (Ilustração) */
 .login-illustration {
-    flex-basis: 50%; /* Ocupa 50% da largura */
-    background-color: #F0F9FF; /* Um azul muito claro, podes ajustar */
+    flex-basis: 50%; 
+    background-color: #F0F9FF; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -205,9 +197,9 @@ main{
     height: auto;
 }
 
-/* 2. Coluna da Direita (Formulário) */
+
 .login-form-wrapper {
-    flex-basis: 50%; /* Ocupa os outros 50% */
+    flex-basis: 50%; 
     padding: 40px 50px;
     display: flex;
     flex-direction: column;
@@ -215,7 +207,7 @@ main{
     box-sizing: border-box;
 }
 
-/* O nosso formulário */
+
 #login-form {
     width: 100%;
 }
@@ -232,26 +224,25 @@ main{
 }
 .form-header .material-symbols-outlined {
     font-size: 2em;
-    color: #0EA5E9; /* Um tom de azul, podes ajustar */
+    color: #0EA5E9; 
 }
 
-/* Títulos */
 .login-form-wrapper h2 {
     font-size: 1.8em;
     font-weight: 500;
-    color: #1E293B; /* Cor escura */
+    color: #1E293B; 
     margin-top: 20px;
     margin-bottom: 8px;
 }
 .login-form-wrapper p {
     font-size: 1em;
-    color: #64748B; /* Cor cinza */
+    color: #64748B; 
     margin-bottom: 30px;
 }
 
-/* O grupo de input (ícone + campo) */
+
 .input-group {
-    position: relative; /* Essencial para posicionar o ícone */
+    position: relative; 
     margin-bottom: 20px;
 }
 
@@ -260,28 +251,27 @@ main{
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #94A3B8; /* Cinza do ícone */
-    pointer-events: none; /* Permite clicar "através" do ícone */
+    color: #94A3B8; 
+    pointer-events: none; 
 }
 
 .input-group input {
     width: 100%;
     height: 50px;
-    padding: 0 20px 0 50px; /* Padding: topo, dir, baixo, ESQUERDA (para o ícone) */
+    padding: 0 20px 0 50px; 
     font-size: 1em;
-    border: 1px solid #CBD5E1; /* Borda cinza clara */
+    border: 1px solid #CBD5E1;
     border-radius: 8px;
-    box-sizing: border-box; /* Garante que o padding não mude a largura */
+    box-sizing: border-box; 
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #22C55E; /* Cor verde (do teu botão) */
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); /* Sombra suave ao focar */
+    border-color: #22C55E; 
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); 
 }
 
-/* Botão de Login (reutilizando a tua cor) */
 .btn-login {
     width: 100%;
     height: 50px;
@@ -299,7 +289,6 @@ main{
     background-color: #1FAA52;
 }
 
-/* Link de "Esqueci a senha" */
 .forgot-password {
     display: block;
     text-align: right;
@@ -312,7 +301,6 @@ main{
     text-decoration: underline;
 }
 
-/* Separador "ou" */
 .separator {
     display: flex;
     align-items: center;
@@ -333,7 +321,6 @@ main{
     margin-left: .25em;
 }
 
-/* Botão de Google */
 .btn-google {
     width: 100%;
     height: 50px;
@@ -351,14 +338,13 @@ main{
     transition: background-color 0.2s;
 }
 .btn-google:hover {
-    background-color: #F8FAFC; /* Cinza muito claro */
+    background-color: #F8FAFC; 
 }
 .btn-google img {
-    width: 20px; /* Tamanho do logo do Google */
+    width: 20px; 
     height: 20px;
 }
 
-/* Link de "Cadastre-se" */
 .signup-link {
     text-align: center;
     margin-top: 25px;
@@ -385,11 +371,143 @@ main{
 }
 
 #form-message.success {
-    background-color: #D1FAE5; /* Fundo verde claro */
-    color: #065F46; /* Texto verde escuro */
+    background-color: #D1FAE5; 
+    color: #065F46; 
 }
 
 #form-message.error {
-    background-color: #FEE2E2; /* Fundo vermelho claro */
-    color: #991B1B; /* Texto vermelho escuro */
+    background-color: #FEE2E2; 
+    color: #991B1B; 
+}
+
+/*
+    ESTILOS PARA O NOVO CARD DE ROTEIRO (Estilo Figma)
+*/
+
+/* O "card" branco principal */
+.roteiro-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 700px; /* Ajusta a largura como preferires */
+    margin: 40px auto; /* Centraliza o card e dá espaço em cima */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Roboto', sans-serif;
+}
+
+.roteiro-card h2 {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #1E293B;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* A parte da barra de progresso */
+.roteiro-progresso {
+    margin-bottom: 24px;
+}
+
+.roteiro-progresso span {
+    font-size: 0.875em;
+    color: #64748B;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.progresso-barra {
+    width: 100%;
+    height: 8px;
+    background-color: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden; /* Garante que o preenchimento fica dentro das bordas */
+}
+
+.progresso-preenchimento {
+    height: 100%;
+    background-color: #22C55E; /* O teu verde principal */
+    border-radius: 4px;
+    transition: width 0.3s ease; /* Animação suave */
+}
+
+/* A lista de checkboxes */
+.roteiro-lista {
+    border-top: 1px solid #E2E8F0;
+    padding-top: 16px;
+}
+
+.roteiro-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* Estilização customizada do checkbox */
+.roteiro-item input[type="checkbox"] {
+    /* Esconde o checkbox padrão */
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.roteiro-item label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1em;
+    color: #334155;
+}
+
+/* O nosso checkbox "falso" */
+.roteiro-item label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #CBD5E1;
+    border-radius: 6px;
+    margin-right: 12px;
+    background-color: #FFF;
+    transition: all 0.2s;
+}
+
+/* O "check" (visto) quando o checkbox está marcado */
+.roteiro-item input[type="checkbox"]:checked + label::before {
+    background-color: #22C55E;
+    border-color: #22C55E;
+    content: '\2713'; /* Código do "check" */
+    color: #FFF;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+}
+
+/* O título do tópico */
+.roteiro-titulo {
+    font-weight: 500;
+}
+
+/* Os botões no final */
+.roteiro-botoes {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E2E8F0;
+}
+
+.btn-secundario {
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    color: #334155;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-secundario:hover {
+    background-color: #F1F5F9;
 }

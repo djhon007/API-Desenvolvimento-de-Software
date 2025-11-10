@@ -1,102 +1,122 @@
-// PASSO 1: "GUARDA DE ROTA" (Page Guard)
-// executado assim que o script.js é carregado
-// verificar se o token existe no localStorage
+
 const token = localStorage.getItem("access_token");
 
 if (!token) {
-    // Se NÃO houver token...
     alert("Acesso negado. Por favor, faça o login.");
-    // Redireciona o utilizador IMEDIATAMENTE para a página de login.
     window.location.href = "login.html";
 }
 
-// PASSO 2: CORREÇÃO DA URL DA API
-// rota do backend é /rotinas/gerar-agenda
 const URL = "http://127.0.0.1:8000/rotinas/gerar-agenda";
 
-// PASSO 3: MODIFICAÇÃO DA FUNÇÃO GerarAgenda
-// função original, agora com o cabeçalho de Autenticação
 async function GerarAgenda(){
 
-    //pegando oque o usuario digitou
     const topico = document.getElementById("Topico_estudo").value;
     const prazo = document.getElementById("Prazo").value;
 
-    //criando o corpo
     const body = {
         topico_de_estudo: topico,
         prazo: prazo
     }
     
-    //defindindo comunicacao do front com o back
     const init = {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            // 
-            // *** AQUI ESTÁ A MAGIA! ***
-            // Estamos a enviar o token que guardámos no login.
-            //
+
             "Authorization": "Bearer " + token 
         },
         body: JSON.stringify(body)
     }
 
     try {
-        //chamar o post na api
         const response = await fetch(URL,init)
 
-        // Verificar se o token expirou (ou é inválido)
         if (response.status === 401) {
             alert("Sua sessão expirou. Por favor, faça login novamente.");
-            localStorage.removeItem("access_token"); // Limpa o token antigo
+            localStorage.removeItem("access_token"); 
             window.location.href = "login.html";
-            return; // Para a execução
+            return; 
         }
 
         if (!response.ok) {
-            // Se der outro erro (ex: 422, 500)
             const errorData = await response.json();
             alert(`Ocorreu um erro ao gerar o roteiro: ${errorData.detail || 'Tente novamente.'}`);
-            return; // Para a execução
+            return; 
         }
 
-        //converter para json
         const data = await response.json();
 
-        // mostrar o retorno na tela
-        // (O teu código original para mostrar o resultado, está perfeito)
-        const antigo = document.getElementById("resultado");
-        if (antigo) antigo.remove();
+    try {
+        // 1. Limpa resultados anteriores (se existirem)
+        const antigoContainer = document.getElementById("roteiro-container");
+        if (antigoContainer) antigoContainer.remove();
 
-        const container = document.createElement("div");
-        container.id = "resultado";
-        container.innerHTML = `<h2> Plano de Estudos Gerado:</h2>`;
-
-        // (Nota: o teu backend parece devolver a agenda dentro de uma lista,
-        // Vou manter o teu código original que acede a data.agenda[0].dias_de_estudo)
+        // 2. Pega os dias de estudo da API
+        // data.agenda[0].dias_de_estudo é o teu array de strings, ex: ["Dia 1: Tópico..."]
         const dias = data.agenda[0].dias_de_estudo;
 
-        const lista = document.createElement("ul");
-        lista.style.listStyle = "none";
-        lista.style.padding = "0";
+        // 3. Cria o "card" principal que vai segurar tudo
+        const roteiroCard = document.createElement("div");
+        roteiroCard.id = "roteiro-container";
+        roteiroCard.className = "roteiro-card"; // Classe para o CSS
 
-        dias.forEach((dia) => {
-            const item = document.createElement("li");
-            item.textContent = dia;
-            item.style.margin = "8px 0";
-            item.style.padding = "10px";
-            item.style.borderRadius = "6px";
-            item.style.background = "#F0F9FF";
-            item.style.border = "1px solid #BEE3F8";
-            item.style.fontFamily = "Roboto, sans-serif";
-            lista.appendChild(item);
+        // 4. Adiciona o HTML do título e da barra de progresso (ainda estática)
+        // Usamos 'innerHTML' para construir o esqueleto do card
+        roteiroCard.innerHTML = `
+            <h2>Seu roteiro personalizado</h2>
+            <div class="roteiro-progresso">
+                <span id="progresso-texto">0/${dias.length} dias concluídos</span>
+                <div class="progresso-barra">
+                    <div id="progresso-preenchimento" class="progresso-preenchimento" style="width: 0%;"></div>
+                </div>
+            </div>
+        `;
+
+        // 5. Cria o container para a lista de checkboxes
+        const listaContainer = document.createElement("div");
+        listaContainer.className = "roteiro-lista";
+
+        // 6. Faz um loop nos dias de estudo e cria um item de checkbox para cada um
+        dias.forEach((dia, index) => {
+            // 'dia' é a string completa, ex: "Dia 1: Revisão de Funções..."
+            // 'index' é o número (0, 1, 2...)
+            const itemId = `roteiro-item-${index}`;
+
+            // Cria o HTML para cada item da lista
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "roteiro-item";
+            itemDiv.innerHTML = `
+                <input type="checkbox" id="${itemId}" class="roteiro-checkbox">
+                <label for="${itemId}">
+                    <span class="roteiro-titulo">${dia}</span>
+                    </label>
+            `;
+            listaContainer.appendChild(itemDiv);
         });
 
-        container.appendChild(lista);
-        // Adiciona o resultado logo abaixo do container principal
-        document.querySelector("main").appendChild(container);
+        // Adiciona a lista de checkboxes ao card
+        roteiroCard.appendChild(listaContainer);
 
+        // 7. Adiciona os botões (ainda visuais, sem função)
+        const botoesDiv = document.createElement("div");
+        botoesDiv.className = "roteiro-botoes";
+        botoesDiv.innerHTML = `
+            <button class="btn-secundario">Salvar</button>
+            <button class="btn-secundario">Exportar PDF</button>
+            <button class="btn-secundario">Compartilhar</button>
+        `;
+        roteiroCard.appendChild(botoesDiv);
+
+        // 8. Finalmente, adiciona o card completo à tua página
+        // Vamos adicioná-lo dentro da tag <main>
+        document.querySelector("main").appendChild(roteiroCard);
+
+        setupProgressoListeners();
+
+    } catch (e) {
+        console.error("Erro ao tentar renderizar o roteiro:", e);
+        alert("Erro ao processar o roteiro recebido.");
+    }
 
     } catch (error) {
         console.error("Erro na requisição:", error);
@@ -104,16 +124,43 @@ async function GerarAgenda(){
     }
 }
 
-// Ligar o botão à função
 document.getElementById("botao_gerar_roteiro").addEventListener("click", (e) => {
-    e.preventDefault(); // Impede o link '#' de navegar
+    e.preventDefault();
     GerarAgenda();
 });
 
-// PASSO 4: FUNÇÃO DE LOGOUT
-// função será ligada a um novo botão no index.html
 function fazerLogout() {
-    localStorage.removeItem("access_token"); // Limpa o token
+    localStorage.removeItem("access_token"); 
     alert("Logout realizado com sucesso.");
-    window.location.href = "login.html"; // Envia para o login
+    window.location.href = "login.html"; 
+}
+
+function setupProgressoListeners() {
+    // 1. Encontra todos os checkboxes que acabámos de criar
+    const checkboxes = document.querySelectorAll(".roteiro-checkbox");
+    
+    // 2. Encontra os elementos da UI que queremos atualizar
+    const progressoTexto = document.getElementById("progresso-texto");
+    const progressoPreenchimento = document.getElementById("progresso-preenchimento");
+    
+    const totalDias = checkboxes.length; // O número total de dias (ex: 10)
+
+    // 3. Esta função será chamada sempre que um checkbox for clicado
+    function atualizarProgresso() {
+        // Conta quantos checkboxes estão :checked (marcados)
+        const diasConcluidos = document.querySelectorAll(".roteiro-checkbox:checked").length;
+        
+        // Calcula a percentagem
+        // (diasConcluidos / totalDias) * 100
+        const percentagem = (diasConcluidos / totalDias) * 100;
+
+        // Atualiza a UI
+        progressoTexto.textContent = `${diasConcluidos}/${totalDias} dias concluídos`;
+        progressoPreenchimento.style.width = `${percentagem}%`;
+    }
+
+    // 4. Adiciona um "ouvinte" de clique a CADA checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("click", atualizarProgresso);
+    });
 }
