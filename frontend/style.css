@@ -31,13 +31,17 @@ main{
     font-size: 1.2em;
 }
 
-#logo_lumi{
-    flex-basis: 140px;
-    flex-grow: 0;
+.barra_externa_navegação #logo_lumi {
+    width: 140px;    
+    height: auto;    
+    flex-grow: 0;    
 }
 
-#logo_lumi > img{
-    width: 100%;
+.form-header #logo_lumi {
+    width: 140px; 
+    height: auto; 
+    margin-bottom: 20px; 
+    flex-grow: 0;
 }
 
 #novo_roteiro_menu_superior{
@@ -162,37 +166,29 @@ main{
     display: block;
 }
 
-/*
-    NOVOS ESTILOS PARA O LOGIN (BASEADO NO FIGMA)
-*/
-
-/* Fundo especial para a página de login */
 .login-background {
-    /* O gradiente do teu design */
     background: linear-gradient(135deg, #E0F2FE 0%, #dbefff 100%);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ocupa a tela inteira */
+    height: 100vh; 
     font-family: 'Roboto', sans-serif;
 }
 
-/* O container principal que segura as duas colunas */
 .login-container {
     display: flex;
     width: 90%;
-    max-width: 1000px; /* Limita a largura máxima */
+    max-width: 1000px; 
     min-height: 600px;
-    background-color: #ffffff; /* Fundo branco para o card */
+    background-color: #ffffff; 
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden; /* Garante que as bordas arredondadas cortem o conteúdo */
+    overflow: hidden; 
 }
 
-/* 1. Coluna da Esquerda (Ilustração) */
 .login-illustration {
-    flex-basis: 50%; /* Ocupa 50% da largura */
-    background-color: #F0F9FF; /* Um azul muito claro, podes ajustar */
+    flex-basis: 50%; 
+    background-color: #F0F9FF; 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -205,9 +201,9 @@ main{
     height: auto;
 }
 
-/* 2. Coluna da Direita (Formulário) */
+
 .login-form-wrapper {
-    flex-basis: 50%; /* Ocupa os outros 50% */
+    flex-basis: 50%; 
     padding: 40px 50px;
     display: flex;
     flex-direction: column;
@@ -215,7 +211,7 @@ main{
     box-sizing: border-box;
 }
 
-/* O nosso formulário */
+
 #login-form {
     width: 100%;
 }
@@ -232,26 +228,25 @@ main{
 }
 .form-header .material-symbols-outlined {
     font-size: 2em;
-    color: #0EA5E9; /* Um tom de azul, podes ajustar */
+    color: #0EA5E9; 
 }
 
-/* Títulos */
 .login-form-wrapper h2 {
     font-size: 1.8em;
     font-weight: 500;
-    color: #1E293B; /* Cor escura */
+    color: #1E293B; 
     margin-top: 20px;
     margin-bottom: 8px;
 }
 .login-form-wrapper p {
     font-size: 1em;
-    color: #64748B; /* Cor cinza */
+    color: #64748B; 
     margin-bottom: 30px;
 }
 
-/* O grupo de input (ícone + campo) */
+
 .input-group {
-    position: relative; /* Essencial para posicionar o ícone */
+    position: relative; 
     margin-bottom: 20px;
 }
 
@@ -260,28 +255,27 @@ main{
     left: 15px;
     top: 50%;
     transform: translateY(-50%);
-    color: #94A3B8; /* Cinza do ícone */
-    pointer-events: none; /* Permite clicar "através" do ícone */
+    color: #94A3B8; 
+    pointer-events: none; 
 }
 
 .input-group input {
     width: 100%;
     height: 50px;
-    padding: 0 20px 0 50px; /* Padding: topo, dir, baixo, ESQUERDA (para o ícone) */
+    padding: 0 20px 0 50px; 
     font-size: 1em;
-    border: 1px solid #CBD5E1; /* Borda cinza clara */
+    border: 1px solid #CBD5E1;
     border-radius: 8px;
-    box-sizing: border-box; /* Garante que o padding não mude a largura */
+    box-sizing: border-box; 
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #22C55E; /* Cor verde (do teu botão) */
-    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); /* Sombra suave ao focar */
+    border-color: #22C55E; 
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); 
 }
 
-/* Botão de Login (reutilizando a tua cor) */
 .btn-login {
     width: 100%;
     height: 50px;
@@ -299,7 +293,6 @@ main{
     background-color: #1FAA52;
 }
 
-/* Link de "Esqueci a senha" */
 .forgot-password {
     display: block;
     text-align: right;
@@ -312,7 +305,6 @@ main{
     text-decoration: underline;
 }
 
-/* Separador "ou" */
 .separator {
     display: flex;
     align-items: center;
@@ -333,7 +325,6 @@ main{
     margin-left: .25em;
 }
 
-/* Botão de Google */
 .btn-google {
     width: 100%;
     height: 50px;
@@ -351,14 +342,13 @@ main{
     transition: background-color 0.2s;
 }
 .btn-google:hover {
-    background-color: #F8FAFC; /* Cinza muito claro */
+    background-color: #F8FAFC; 
 }
 .btn-google img {
-    width: 20px; /* Tamanho do logo do Google */
+    width: 20px; 
     height: 20px;
 }
 
-/* Link de "Cadastre-se" */
 .signup-link {
     text-align: center;
     margin-top: 25px;
@@ -385,11 +375,609 @@ main{
 }
 
 #form-message.success {
-    background-color: #D1FAE5; /* Fundo verde claro */
-    color: #065F46; /* Texto verde escuro */
+    background-color: #D1FAE5; 
+    color: #065F46; 
 }
 
 #form-message.error {
-    background-color: #FEE2E2; /* Fundo vermelho claro */
-    color: #991B1B; /* Texto vermelho escuro */
+    background-color: #FEE2E2; 
+    color: #991B1B; 
+}
+
+/*
+    ESTILOS PARA O NOVO CARD DE ROTEIRO (Estilo Figma)
+*/
+
+/* O "card" branco principal */
+.roteiro-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 700px; /* Ajusta a largura como preferires */
+    margin: 40px auto; /* Centraliza o card e dá espaço em cima */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    font-family: 'Roboto', sans-serif;
+}
+
+.roteiro-card h2 {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: #1E293B;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* A parte da barra de progresso */
+.roteiro-progresso {
+    margin-bottom: 24px;
+}
+
+.roteiro-progresso span {
+    font-size: 0.875em;
+    color: #64748B;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.progresso-barra {
+    width: 100%;
+    height: 8px;
+    background-color: #E2E8F0;
+    border-radius: 4px;
+    overflow: hidden; /* Garante que o preenchimento fica dentro das bordas */
+}
+
+.progresso-preenchimento {
+    height: 100%;
+    background-color: #22C55E; /* O teu verde principal */
+    border-radius: 4px;
+    transition: width 0.3s ease; /* Animação suave */
+}
+
+/* A lista de checkboxes */
+.roteiro-lista {
+    border-top: 1px solid #E2E8F0;
+    padding-top: 16px;
+}
+
+.roteiro-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* Estilização customizada do checkbox */
+.roteiro-item input[type="checkbox"] {
+    /* Esconde o checkbox padrão */
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.roteiro-item label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1em;
+    color: #334155;
+}
+
+/* O nosso checkbox "falso" */
+.roteiro-item label::before {
+    content: '';
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #CBD5E1;
+    border-radius: 6px;
+    margin-right: 12px;
+    background-color: #FFF;
+    transition: all 0.2s;
+}
+
+/* O "check" (visto) quando o checkbox está marcado */
+.roteiro-item input[type="checkbox"]:checked + label::before {
+    background-color: #22C55E;
+    border-color: #22C55E;
+    content: '\2713'; /* Código do "check" */
+    color: #FFF;
+    text-align: center;
+    line-height: 20px;
+    font-weight: bold;
+}
+
+/* O título do tópico */
+.roteiro-titulo {
+    font-weight: 500;
+}
+
+/* Os botões no final */
+.roteiro-botoes {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #E2E8F0;
+}
+
+.btn-secundario {
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    color: #334155;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-secundario:hover {
+    background-color: #F1F5F9;
+}
+
+/* ============================================== */
+/* == CÓDIGO CSS PARA A TELA DE HISTÓRICO      == */
+/* ============================================== */
+
+/* Estas variáveis são usadas pelo CSS do histórico. 
+   É seguro adicioná-las aqui.
+*/
+:root {
+    --color-white: #ffffff;
+    --color-bg-light: #ecfeff;
+    --color-bg-gradient-end: #ffffff;
+    --color-text-primary: #1e293b; 
+    --color-text-secondary: #64748b;
+    --color-text-light: #94a3b8;
+    --color-border: #f1f5f9;
+    --color-border-dark: #e2e8f0;
+    --color-emerald: #22C55E;
+    --color-emerald-hover: #059669;
+    --color-slate-50: #f8fafc;
+    --color-slate-700: #334155;
+    --color-slate-900: #0f172a;
+    --color-slate-900-dark: #1e293b;
+    --color-header-shadow: rgba(0, 0, 0, 0.1);
+    --color-overlay: rgba(0, 0, 0, 0.5);
+    --color-footer-bg: #0f172a;
+    --color-footer-text: #6b7280;
+    
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-2xl: 2.5rem;
+    --spacing-3xl: 3rem;
+    --spacing-4xl: 4rem;
+    
+    --radius-sm: 0.5rem;
+    --radius-lg: 1rem;
+    --radius-full: 9999px;
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-header: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.pagina-historico {
+    font-family: 'Roboto', sans-serif;
+}
+
+.pagina-historico .main-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.pagina-historico .header.scrolled {
+    box-shadow: var(--shadow-header);
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+.pagina-historico .nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+@media (min-width: 768px) {
+    .pagina-historico .nav {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+    }
+}
+
+.pagina-historico .nav-logo {
+    flex: 1;
+}
+
+.pagina-historico .logo-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-decoration: none;
+}
+
+.pagina-historico .logo-img {
+    height: 2rem;
+    width: auto;
+}
+
+.pagina-historico .nav-links {
+    flex: 1;
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .pagina-historico .nav-links {
+        display: flex;
+        justify-content: center;
+    }
+}
+
+.pagina-historico .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.pagina-historico .nav-item {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.pagina-historico .nav-item:hover {
+    color: var(--color-text-primary);
+}
+
+.pagina-historico .nav-action {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.pagina-historico .btn-primary {
+    background-color: var(--color-emerald);
+    color: var(--color-white);
+    font-weight: 500;
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.pagina-historico .btn-primary:hover {
+    background-color: var(--color-emerald-hover);
+}
+
+/* MAIN (do histórico) */
+.pagina-historico .main {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: var(--spacing-3xl) var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+    .pagina-historico .main {
+        padding: var(--spacing-4xl) var(--spacing-lg);
+    }
+}
+
+/* SECTION TITLE */
+.pagina-historico .section-title {
+    text-align: center;
+    margin-bottom: var(--spacing-3xl);
+}
+
+@media (min-width: 768px) {
+    .pagina-historico .section-title {
+        margin-bottom: var(--spacing-3xl);
+    }
+}
+
+.pagina-historico .page-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+@media (min-width: 768px) {
+    .pagina-historico .page-title {
+        font-size: 3rem;
+    }
+}
+
+.pagina-historico .page-subtitle {
+    font-size: 1.125rem;
+    color: var(--color-text-secondary);
+}
+
+/* SEARCH SECTION */
+.pagina-historico .section-search {
+    margin-bottom: var(--spacing-2xl);
+}
+
+.pagina-historico .search-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .pagina-historico .search-container {
+        flex-direction: row;
+    }
+}
+
+.pagina-historico .search-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.pagina-historico .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-light);
+    display: flex;
+    align-items: center;
+}
+
+.pagina-historico .search-input {
+    width: 100%;
+    padding-left: 3rem;
+    padding-right: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.pagina-historico .search-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-emerald);
+    border-color: transparent;
+}
+
+.pagina-historico .btn-filter {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 0.75rem var(--spacing-lg);
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border-dark);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--color-slate-700);
+    transition: background-color 0.2s;
+    font-family: inherit;
+}
+
+.pagina-historico .btn-filter:hover {
+    background-color: var(--color-slate-50);
+}
+
+/* PLANS SECTION */
+.pagina-historico .section-plans {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+    gap: 2rem;
+}
+
+/* PLAN CARD */
+.pagina-historico .plan-card {
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border-radius: 1rem;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 384px;
+}
+
+.pagina-historico .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-sm);
+}
+
+.pagina-historico .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.pagina-historico .btn-menu {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-text-light);
+    padding: var(--spacing-xs);
+    transition: color 0.2s;
+}
+
+.pagina-historico .btn-menu:hover {
+    color: var(--color-text-secondary);
+}
+
+.pagina-historico .card-date {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1rem;
+}
+
+/* PROGRESS BAR */
+.pagina-historico .progress-background {
+    width: 100%;
+    background-color: var(--color-border-dark);
+    border-radius: var(--radius-full);
+    height: 0.375rem;
+    margin-bottom: var(--spacing-sm);
+    overflow: hidden;
+}
+
+.pagina-historico .progress-bar {
+    background-color: var(--color-emerald);
+    height: 0.375rem;
+    border-radius: var(--radius-full);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+.pagina-historico .card-progress-text {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* CARD TASKS */
+.pagina-historico .card-tasks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-bottom: 1.5rem;
+}
+
+.pagina-historico .task-item {
+    color: var(--color-text-primary);
+    font-size: 0.875rem;
+}
+
+.pagina-historico .task-label {
+    font-weight: 500;
+}
+
+/* CARD BUTTON */
+.pagina-historico .btn-card {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background-color: var(--color-emerald);
+    color: var(--color-white);
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: background-color 0.2s;
+    margin-top: auto;
+}
+
+.pagina-historico .btn-card:hover {
+    background-color: var(--color-emerald-hover);
+}
+
+/* FOOTER */
+.pagina-historico .footer {
+    background-color: var(--color-footer-bg);
+    text-align: center;
+    padding: var(--spacing-2xl);
+}
+
+.pagina-historico .footer-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+}
+
+.pagina-historico .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-lg);
+    margin-bottom: 1rem;
+}
+
+.pagina-historico .footer-link {
+    color: var(--color-footer-text);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.pagina-historico .footer-link:hover {
+    color: var(--color-white);
+}
+
+.pagina-historico .footer-text {
+    color: var(--color-footer-text);
+    font-size: 0.875rem;
+}
+
+/* MODAL */
+.pagina-historico .filter-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--color-overlay);
+    z-index: 40;
+}
+
+.pagina-historico .filter-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 50;
+}
+
+.pagina-historico .btn-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: color 0.2s;
+}
+
+.pagina-historico .btn-close:hover {
+    color: var(--color-text-primary);
+}
+
+/* UTILITY CLASSES */
+.pagina-historico .hidden {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .pagina-historico .main {
+        padding: var(--spacing-2xl) var(--spacing-lg);
+    }
+    .pagina-historico .section-plans {
+        gap: 1.5rem;
+    }
 }

@@ -1,42 +1,28 @@
-// PASSO 1: "GUARDA DE ROTA" (Page Guard)
-// executado assim que o script.js é carregado
-// verificar se o token existe no localStorage
+
 const token = localStorage.getItem("access_token");
 
 if (!token) {
-    // Se NÃO houver token...
     alert("Acesso negado. Por favor, faça o login.");
-    // Redireciona o utilizador IMEDIATAMENTE para a página de login.
     window.location.href = "login.html";
 }
 
-// PASSO 2: CORREÇÃO DA URL DA API
-// rota do backend é /rotinas/gerar-agenda
 const URL = "http://127.0.0.1:8000/rotinas/gerar-agenda";
 
-// PASSO 3: MODIFICAÇÃO DA FUNÇÃO GerarAgenda
-// função original, agora com o cabeçalho de Autenticação
 async function GerarAgenda(){
 
-    //pegando oque o usuario digitou
     const topico = document.getElementById("Topico_estudo").value;
     const prazo = document.getElementById("Prazo").value;
 
-    //criando o corpo
     const body = {
         topico_de_estudo: topico,
         prazo: prazo
     }
     
-    //defindindo comunicacao do front com o back
     const init = {
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            // 
-            // *** AQUI ESTÁ A MAGIA! ***
-            // Estamos a enviar o token que guardámos no login.
-            //
+
             "Authorization": "Bearer " + token 
         },
         body: JSON.stringify(body)
@@ -44,25 +30,21 @@ async function GerarAgenda(){
     console.log(URL)
 
     try {
-        //chamar o post na api
         const response = await fetch(URL,init)
 
-        // Verificar se o token expirou (ou é inválido)
         if (response.status === 401) {
             alert("Sua sessão expirou. Por favor, faça login novamente.");
-            localStorage.removeItem("access_token"); // Limpa o token antigo
+            localStorage.removeItem("access_token"); 
             window.location.href = "login.html";
-            return; // Para a execução
+            return; 
         }
 
         if (!response.ok) {
-            // Se der outro erro (ex: 422, 500)
             const errorData = await response.json();
             alert(`Ocorreu um erro ao gerar o roteiro: ${errorData.detail || 'Tente novamente.'}`);
-            return; // Para a execução
+            return; 
         }
 
-        //converter para json
         const data = await response.json();
 
         // mostrar o retorno na tela
@@ -98,10 +80,29 @@ async function GerarAgenda(){
             lista.appendChild(item);
         });
 
-        container.appendChild(lista);
-        // Adiciona o resultado logo abaixo do container principal
-        document.querySelector("main").appendChild(container);
+        // Adiciona a lista de checkboxes ao card
+        roteiroCard.appendChild(listaContainer);
 
+        // 7. Adiciona os botões (ainda visuais, sem função)
+        const botoesDiv = document.createElement("div");
+        botoesDiv.className = "roteiro-botoes";
+        botoesDiv.innerHTML = `
+            <button class="btn-secundario">Salvar</button>
+            <button class="btn-secundario">Exportar PDF</button>
+            <button class="btn-secundario">Compartilhar</button>
+        `;
+        roteiroCard.appendChild(botoesDiv);
+
+        // 8. Finalmente, adiciona o card completo à tua página
+        // Vamos adicioná-lo dentro da tag <main>
+        document.querySelector("main").appendChild(roteiroCard);
+
+        setupProgressoListeners();
+
+    } catch (e) {
+        console.error("Erro ao tentar renderizar o roteiro:", e);
+        alert("Erro ao processar o roteiro recebido.");
+    }
 
     } catch (error) {
         console.error("Erro na requisição:", error);
@@ -109,16 +110,43 @@ async function GerarAgenda(){
     }
 }
 
-// Ligar o botão à função
 document.getElementById("botao_gerar_roteiro").addEventListener("click", (e) => {
-    e.preventDefault(); // Impede o link '#' de navegar
+    e.preventDefault();
     GerarAgenda();
 });
 
-// PASSO 4: FUNÇÃO DE LOGOUT
-// função será ligada a um novo botão no index.html
 function fazerLogout() {
-    localStorage.removeItem("access_token"); // Limpa o token
+    localStorage.removeItem("access_token"); 
     alert("Logout realizado com sucesso.");
-    window.location.href = "login.html"; // Envia para o login
+    window.location.href = "login.html"; 
+}
+
+function setupProgressoListeners() {
+    // 1. Encontra todos os checkboxes que acabámos de criar
+    const checkboxes = document.querySelectorAll(".roteiro-checkbox");
+    
+    // 2. Encontra os elementos da UI que queremos atualizar
+    const progressoTexto = document.getElementById("progresso-texto");
+    const progressoPreenchimento = document.getElementById("progresso-preenchimento");
+    
+    const totalDias = checkboxes.length; // O número total de dias (ex: 10)
+
+    // 3. Esta função será chamada sempre que um checkbox for clicado
+    function atualizarProgresso() {
+        // Conta quantos checkboxes estão :checked (marcados)
+        const diasConcluidos = document.querySelectorAll(".roteiro-checkbox:checked").length;
+        
+        // Calcula a percentagem
+        // (diasConcluidos / totalDias) * 100
+        const percentagem = (diasConcluidos / totalDias) * 100;
+
+        // Atualiza a UI
+        progressoTexto.textContent = `${diasConcluidos}/${totalDias} dias concluídos`;
+        progressoPreenchimento.style.width = `${percentagem}%`;
+    }
+
+    // 4. Adiciona um "ouvinte" de clique a CADA checkbox
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener("click", atualizarProgresso);
+    });
 }
