@@ -47,52 +47,37 @@ async function GerarAgenda(){
 
         const data = await response.json();
 
-    try {
-        // 1. Limpa resultados anteriores (se existirem)
-        const antigoContainer = document.getElementById("roteiro-container");
-        if (antigoContainer) antigoContainer.remove();
+        // mostrar o retorno na tela
+        // (O teu código original para mostrar o resultado, está perfeito)
+        const antigo = document.getElementById("resultado");
+        if (antigo) antigo.remove();
 
-        // 2. Pega os dias de estudo da API
-        // data.agenda[0].dias_de_estudo é o teu array de strings, ex: ["Dia 1: Tópico..."]
-        const dias = data.conteudo.split('\n');
+        const container = document.createElement("div");
+        container.id = "resultado";
+        container.innerHTML = `<h2> Plano de Estudos Gerado:</h2>`;
 
-        // 3. Cria o "card" principal que vai segurar tudo
-        const roteiroCard = document.createElement("div");
-        roteiroCard.id = "roteiro-container";
-        roteiroCard.className = "roteiro-card"; // Classe para o CSS
+        // (Nota: o teu backend parece devolver a agenda dentro de uma lista,
+        // Vou manter o teu código original que acede a data.agenda[0].dias_de_estudo)
+        console.log("Resposta completa da API:", data);
 
-        // 4. Adiciona o HTML do título e da barra de progresso (ainda estática)
-        // Usamos 'innerHTML' para construir o esqueleto do card
-        roteiroCard.innerHTML = `
-            <h2>Seu roteiro personalizado</h2>
-            <div class="roteiro-progresso">
-                <span id="progresso-texto">0/${dias.length} dias concluídos</span>
-                <div class="progresso-barra">
-                    <div id="progresso-preenchimento" class="progresso-preenchimento" style="width: 0%;"></div>
-                </div>
-            </div>
-        `;
+        // transforma o conteúdo em linhas separadas
+        const dias = data.conteudo.split("\n");
 
-        // 5. Cria o container para a lista de checkboxes
-        const listaContainer = document.createElement("div");
-        listaContainer.className = "roteiro-lista";
 
-        // 6. Faz um loop nos dias de estudo e cria um item de checkbox para cada um
-        dias.forEach((dia, index) => {
-            // 'dia' é a string completa, ex: "Dia 1: Revisão de Funções..."
-            // 'index' é o número (0, 1, 2...)
-            const itemId = `roteiro-item-${index}`;
+        const lista = document.createElement("ul");
+        lista.style.listStyle = "none";
+        lista.style.padding = "0";
 
-            // Cria o HTML para cada item da lista
-            const itemDiv = document.createElement("div");
-            itemDiv.className = "roteiro-item";
-            itemDiv.innerHTML = `
-                <input type="checkbox" id="${itemId}" class="roteiro-checkbox">
-                <label for="${itemId}">
-                    <span class="roteiro-titulo">${dia}</span>
-                    </label>
-            `;
-            listaContainer.appendChild(itemDiv);
+        dias.forEach((dia) => {
+            const item = document.createElement("li");
+            item.textContent = dia;
+            item.style.margin = "8px 0";
+            item.style.padding = "10px";
+            item.style.borderRadius = "6px";
+            item.style.background = "#F0F9FF";
+            item.style.border = "1px solid #BEE3F8";
+            item.style.fontFamily = "Roboto, sans-serif";
+            lista.appendChild(item);
         });
 
         // Adiciona a lista de checkboxes ao card

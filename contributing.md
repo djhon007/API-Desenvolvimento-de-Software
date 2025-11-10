@@ -48,7 +48,7 @@ Para começar a desenvolver, siga os passos abaixo.
 3. Crie um ambiente virtual:
 
    ```bash
-   python -m venv env
+   python3 -m venv venv
    ```
 
 4. Ative o ambiente virtual (Linux/Mac):
@@ -75,7 +75,8 @@ Para começar a desenvolver, siga os passos abaixo.
 7. Execute o servidor backend:
 
    ```bash
-   uvicorn main:app --reload
+   python -m uvicorn main:app --reload
+
    ```
 
 8. Em outro terminal, rode o frontend (caso exista):
