@@ -1,11 +1,6 @@
-/* 'DOMContentLoaded' espera o HTML carregar antes de executar o JS.
-   Tornámo-lo 'async' para podermos usar 'await' para o fetch.
-*/
 document.addEventListener('DOMContentLoaded', async () => {
 
-    // -----------------------------------------------------------------
-    // 1. GUARDA DE ROTA E AUTENTICAÇÃO
-    // -----------------------------------------------------------------
+
     const token = localStorage.getItem("access_token");
     const containerDePlanos = document.getElementById("grade-de-planos");
 
@@ -21,9 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // -----------------------------------------------------------------
-    // 2. BUSCAR OS ROTEIROS DA API (FETCH)
-    // -----------------------------------------------------------------
+
     try {
         const URL = "http://127.0.0.1:8000/rotinas/listar";
         const init = {
@@ -55,43 +48,28 @@ document.addEventListener('DOMContentLoaded', async () => {
             return; // Para a execução
         }
         
-        // SUCESSO! Temos os dados.
-        const roteiros = await response.json(); // Isto é uma LISTA de roteiros
+        const roteiros = await response.json(); 
         
-        // -----------------------------------------------------------------
-        // 3. RENDERIZAR OS CARDS DINAMICAMENTE
-        // -----------------------------------------------------------------
-        
-        // Limpa (por via das dúvidas)
         containerDePlanos.innerHTML = ''; 
 
-        // Faz um loop em cada roteiro que veio do backend
         roteiros.forEach(roteiro => {
-            // roteiro.id, roteiro.titulo, roteiro.conteudo, roteiro.criado_em, roteiro.concluido
 
-            // Cria uma nova div para o card
             const cardDiv = document.createElement('div');
-            cardDiv.className = 'plan-card'; // Usa a classe CSS do teu colega
+            cardDiv.className = 'plan-card'; 
 
-            // Calcula o progresso (ex: 3/14 dias)
-            // (Esta é uma lógica de exemplo, pois o backend só diz 'concluido' (true/false)
-            // Vamos assumir 0% se não estiver concluído e 100% se estiver)
             const totalDias = roteiro.conteudo.split('\n').length;
             const diasConcluidos = roteiro.concluido ? totalDias : 0;
             const percentagem = (diasConcluidos / totalDias) * 100;
             
-            // Pega os 2 primeiros dias para mostrar na prévia
             const previaDias = roteiro.conteudo.split('\n').slice(0, 2);
 
-            // Formata a data (ex: 08/09/2025)
-            // A data vem como "2025-11-10 11:51:09"
             const dataObj = new Date(roteiro.criado_em.split(' ')[0]);
             const dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            const tituloFormatado = roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
 
-            // Insere o HTML do card, usando os dados do roteiro
             cardDiv.innerHTML = `
                 <div class="card-header">
-                    <h2 class="card-title">${roteiro.titulo}</h2>
+                    <h2 class="card-title">${tituloFormatado}</h2>
                     <button class="btn-menu">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
@@ -113,14 +91,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <a href="#" class="btn-card">Ver plano</a>
             `;
 
-            // Adiciona o card novo à grade
             containerDePlanos.appendChild(cardDiv);
         });
 
-        // -----------------------------------------------------------------
-        // 4. ATIVAR OS OUTROS SCRIPTS (Filtro, Busca, etc.)
-        //    (Agora que os cards existem, podemos ativar a busca)
-        // -----------------------------------------------------------------
         ativarRecursosDaPagina(roteiros);
 
 
@@ -131,13 +104,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 });
 
-
-/* Esta função separada contém o código do teu colega (filtro, busca)
-  e só será chamada DEPOIS que o fetch terminar.
-*/
 function ativarRecursosDaPagina(roteiros) {
 
-    // --- 1. RECURSO: HEADER COM SOMBRA AO ROLAR ---
     const header = document.querySelector('header');
     if (header) {
         window.addEventListener('scroll', () => {
@@ -149,7 +117,6 @@ function ativarRecursosDaPagina(roteiros) {
         });
     }
 
-    // --- 2. RECURSO: MODAL DE FILTROS ---
     const filterButton = document.querySelector('.btn-filter');
     const filterModal = document.getElementById('filter-modal');
     const filterCloseButton = document.getElementById('filter-close-button');
@@ -173,9 +140,7 @@ function ativarRecursosDaPagina(roteiros) {
     if (filterOverlay) filterOverlay.addEventListener('click', closeModal);
 
 
-    // --- 3. RECURSO: BUSCA EM TEMPO REAL (AGORA FUNCIONA COM CARDS DINÂMICOS) ---
     const searchInput = document.querySelector('.search-input');
-    // Não busca mais os cards do HTML, mas sim os que acabámos de criar
     const planCards = document.querySelectorAll('.plan-card'); 
 
     if (searchInput) {
@@ -195,7 +160,4 @@ function ativarRecursosDaPagina(roteiros) {
             });
         });
     }
-
-    // O recurso "Cálculo Dinâmico" não é mais necessário,
-    // pois já calculámos o progresso ao renderizar os cards.
 }
