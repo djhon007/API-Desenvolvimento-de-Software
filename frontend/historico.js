@@ -1,163 +1,212 @@
 document.addEventListener('DOMContentLoaded', async () => {
+  const token = localStorage.getItem("access_token");
+  const containerDePlanos = document.getElementById("grade-de-planos");
 
+  if (!token) {
+    alert("Acesso negado. Por favor, faça o login.");
+    window.location.href = "login.html";
+    return;
+  }
 
-    const token = localStorage.getItem("access_token");
-    const containerDePlanos = document.getElementById("grade-de-planos");
+  try {
+    const response = await fetch("http://127.0.0.1:8000/rotinas/listar", {
+      method: 'GET',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      }
+    });
 
-    if (!token) {
-        // Se NÃO houver token, expulsa para o login
-        alert("Acesso negado. Por favor, faça o login.");
-        window.location.href = "login.html";
-        return; // Para a execução
+    if (response.status === 401) {
+      alert("Sessão expirada. Faça login novamente.");
+      localStorage.removeItem("access_token");
+      window.location.href = "login.html";
+      return;
     }
 
-    if (!containerDePlanos) {
-        console.error("Erro fatal: Container 'grade-de-planos' não encontrado.");
-        return;
+    if (!response.ok) {
+      if (response.status === 404) {
+        containerDePlanos.innerHTML = "<p class='page-subtitle'>Nenhum roteiro encontrado. Crie um na página 'Início'!</p>";
+      } else {
+        throw new Error('Falha ao buscar roteiros.');
+      }
+      return;
     }
 
+    const roteiros = await response.json();
+    containerDePlanos.innerHTML = '';
 
-    try {
-        const URL = "http://127.0.0.1:8000/rotinas/listar";
-        const init = {
-            method: 'GET',
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + token 
-            }
-        };
+    roteiros.forEach((roteiro, index) => {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'plan-card';
+      // Damos um ID ao card para facilitar a busca depois, se precisar
+      cardDiv.id = `card-roteiro-${roteiro.id}`;
 
-        const response = await fetch(URL, init);
+      const totalDias = roteiro.conteudo.split('\n').length;
+      const diasConcluidos = roteiro.concluido ? totalDias : 0;
+      const percentagem = (diasConcluidos / totalDias) * 100;
 
-        // Se o token expirou ou é inválido
-        if (response.status === 401) {
-            alert("Sua sessão expirou. Por favor, faça login novamente.");
-            localStorage.removeItem("access_token");
-            window.location.href = "login.html";
-            return;
-        }
+      const previaDias = roteiro.conteudo.split('\n').slice(0, 2);
+      const dataObj = new Date(roteiro.criado_em.split(' ')[0]);
+      const dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+      const tituloFormatado = roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
 
-        // Se não houver roteiros (404) ou outro erro
-        if (!response.ok) {
-            // O backend (rotinas.py) devolve 404 se não houver roteiros
-            if (response.status === 404) {
-                containerDePlanos.innerHTML = "<p class='page-subtitle'>Nenhum roteiro encontrado. Crie um na página 'Início'!</p>";
-            } else {
-                throw new Error('Falha ao buscar roteiros.');
-            }
-            return; // Para a execução
-        }
+      cardDiv.innerHTML = `
+        <div class="card-header">
+          <h2 class="card-title">${tituloFormatado}</h2>
+          <p class="card-date">${dataFormatada}</p>
+        </div>
+        <div class="progress-background">
+          <div class="progress-bar" style="width: ${percentagem}%;"></div>
+        </div>
+        <p class="card-progress-text">${diasConcluidos}/${totalDias} dias concluídos</p>
         
-        const roteiros = await response.json(); 
+        <div class="card-tasks">
+          <p class="task-item">${previaDias[0] || '...'}</p>
+          <p class="task-item">${previaDias[1] || '...'}</p>
+        </div>
         
-        containerDePlanos.innerHTML = ''; 
+        <a href="#" class="btn-card" data-index="${index}">Ver plano</a>
+      `;
+      containerDePlanos.appendChild(cardDiv);
+    });
 
-        roteiros.forEach(roteiro => {
+    // Ativa os botões "Ver plano"
+    document.querySelectorAll('.btn-card').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const index = e.target.dataset.index;
+        // O segredo: Passamos o roteiro E o elemento do card (o pai do botão)
+        const cardElement = e.target.closest('.plan-card');
+        abrirModalPlano(roteiros[index], cardElement);
+      });
+    });
 
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'plan-card'; 
-
-            const totalDias = roteiro.conteudo.split('\n').length;
-            const diasConcluidos = roteiro.concluido ? totalDias : 0;
-            const percentagem = (diasConcluidos / totalDias) * 100;
-            
-            const previaDias = roteiro.conteudo.split('\n').slice(0, 2);
-
-            const dataObj = new Date(roteiro.criado_em.split(' ')[0]);
-            const dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-            const tituloFormatado = roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
-
-            cardDiv.innerHTML = `
-                <div class="card-header">
-                    <h2 class="card-title">${tituloFormatado}</h2>
-                    <button class="btn-menu">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-                        </svg>
-                    </button>
-                </div>
-                <p class="card-date">Criado em ${dataFormatada}</p>
-                
-                <div class="progress-background">
-                    <div class="progress-bar" style="width: ${percentagem}%;"></div>
-                </div>
-                <p class="card-progress-text">${diasConcluidos}/${totalDias} dias concluídos</p>
-
-                <div class="card-tasks">
-                    <p class="task-item">${previaDias[0] || '...'}</p>
-                    <p class="task-item">${previaDias[1] || '...'}</p>
-                </div>
-
-                <a href="#" class="btn-card">Ver plano</a>
-            `;
-
-            containerDePlanos.appendChild(cardDiv);
-        });
-
-        ativarRecursosDaPagina(roteiros);
-
-
-    } catch (error) {
-        console.error("Erro ao carregar roteiros:", error);
-        containerDePlanos.innerHTML = "<p class='page-subtitle'>Ocorreu um erro ao carregar seus roteiros. Tente novamente mais tarde.</p>";
-    }
-
+  } catch (error) {
+    console.error("Erro ao carregar roteiros:", error);
+    containerDePlanos.innerHTML = "<p class='page-subtitle'>Ocorreu um erro ao carregar seus roteiros.</p>";
+  }
 });
 
-function ativarRecursosDaPagina(roteiros) {
+// --- FUNÇÃO DO MODAL ATUALIZADA ---
+function abrirModalPlano(roteiro, cardElement) {
+  const modal = document.getElementById('plano-modal');
+  const overlay = document.getElementById('plano-overlay');
+  const token = localStorage.getItem("access_token");
 
-    const header = document.querySelector('header');
-    if (header) {
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 10) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+  // 1. Preenche dados básicos
+  const tituloFormatado = roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
+  document.getElementById('plano-titulo').textContent = tituloFormatado;
+  
+  const dataCriacao = roteiro.criado_em ? roteiro.criado_em.split(' ')[0] : '--/--/----';
+  document.getElementById('plano-data').textContent = "Criado em " + dataCriacao;
+
+  // 2. Gera Checkboxes
+  const tarefasDiv = document.getElementById('plano-tarefas');
+  tarefasDiv.innerHTML = '';
+  
+  const dias = roteiro.conteudo.split('\n');
+
+  dias.forEach((dia, index) => {
+    if (dia.trim() !== '') {
+      const itemId = `modal-item-${index}`;
+      const itemDiv = document.createElement('div');
+      itemDiv.className = 'roteiro-item'; 
+
+      // Se o roteiro já estiver 100% concluído no banco, marca tudo
+      const isChecked = roteiro.concluido ? 'checked' : '';
+
+      itemDiv.innerHTML = `
+          <input type="checkbox" id="${itemId}" class="roteiro-checkbox" ${isChecked}>
+          <label for="${itemId}">
+              <span class="roteiro-titulo">${dia}</span>
+          </label>
+      `;
+      tarefasDiv.appendChild(itemDiv);
     }
+  });
 
-    const filterButton = document.querySelector('.btn-filter');
-    const filterModal = document.getElementById('filter-modal');
-    const filterCloseButton = document.getElementById('filter-close-button');
-    const filterOverlay = document.getElementById('filter-overlay');
+  // 3. Sincronização Visual (Modal <-> Card)
+  const progressBarModal = document.getElementById('plano-progress');
+  const progressTextModal = document.getElementById('modal-progresso-texto');
+  const checkboxes = tarefasDiv.querySelectorAll('.roteiro-checkbox');
+  const totalCheckboxes = checkboxes.length;
 
-    const openModal = () => {
-        if (filterModal) {
-            filterModal.classList.remove('hidden');
-            filterOverlay.classList.remove('hidden');
-        }
-    }
-    
-    const closeModal = () => {
-        if (filterModal) {
-            filterModal.classList.add('hidden');
-            filterOverlay.classList.add('hidden');
-        }
-    }
-    if (filterButton) filterButton.addEventListener('click', openModal);
-    if (filterCloseButton) filterCloseButton.addEventListener('click', closeModal);
-    if (filterOverlay) filterOverlay.addEventListener('click', closeModal);
+  // Elementos do Card de trás (que vamos atualizar)
+  const cardProgressBar = cardElement.querySelector('.progress-bar');
+  const cardProgressText = cardElement.querySelector('.card-progress-text');
 
+  function atualizarTudo() {
+      const marcados = tarefasDiv.querySelectorAll('.roteiro-checkbox:checked').length;
+      const porcentagem = totalCheckboxes > 0 ? (marcados / totalCheckboxes) * 100 : 0;
+      
+      // Atualiza Modal
+      progressBarModal.style.width = `${porcentagem}%`;
+      progressTextModal.textContent = `${marcados}/${totalCheckboxes} concluídos`;
 
-    const searchInput = document.querySelector('.search-input');
-    const planCards = document.querySelectorAll('.plan-card'); 
+      // Atualiza Card (Lá no fundo)
+      if(cardProgressBar) cardProgressBar.style.width = `${porcentagem}%`;
+      if(cardProgressText) cardProgressText.textContent = `${marcados}/${totalCheckboxes} dias concluídos`;
+  }
 
-    if (searchInput) {
-        searchInput.addEventListener('input', (event) => {
-            const searchTerm = event.target.value.toLowerCase();
+  // Listeners para cliques individuais
+  checkboxes.forEach(cb => {
+      cb.addEventListener('click', atualizarTudo);
+  });
 
-            planCards.forEach(card => {
-                const titleElement = card.querySelector('.card-title');
-                if (titleElement) {
-                    const title = titleElement.textContent.toLowerCase();
-                    if (title.includes(searchTerm)) {
-                        card.style.display = 'flex'; 
-                    } else {
-                        card.style.display = 'none';
-                    }
-                }
-            });
-        });
-    }
+  // --- BOTÃO CONCLUÍDO (COM INTEGRAÇÃO AO BANCO) ---
+  const btnConcluido = document.querySelector('.btn-concluido');
+  if (btnConcluido) {
+      // Truque para remover listeners antigos
+      const novoBtn = btnConcluido.cloneNode(true);
+      btnConcluido.parentNode.replaceChild(novoBtn, btnConcluido);
+      
+      novoBtn.addEventListener('click', async () => {
+          // 1. Visualmente marca tudo
+          checkboxes.forEach(cb => cb.checked = true);
+          atualizarTudo();
+
+          // 2. Envia para o Backend (SALVAR NO BANCO)
+          try {
+              const response = await fetch(`http://127.0.0.1:8000/rotinas/${roteiro.id}/concluir`, {
+                  method: 'PATCH',
+                  headers: {
+                      "Authorization": "Bearer " + token
+                  }
+              });
+
+              if (response.ok) {
+                  // Atualiza o objeto local também para não perder se fechar e abrir
+                  roteiro.concluido = true; 
+                  fecharModalPlano();
+              } else {
+                  alert("Erro ao salvar a conclusão no sistema.");
+              }
+          } catch (error) {
+              console.error(error);
+              alert("Erro de conexão ao tentar salvar.");
+          }
+      });
+  }
+
+  // Inicializa os valores ao abrir
+  atualizarTudo();
+
+  // Mostrar Modal
+  modal.classList.remove('hidden');
+  overlay.classList.remove('hidden');
+
+  // Fechar
+  document.getElementById('close-plano').onclick = fecharModalPlano;
+  overlay.onclick = fecharModalPlano;
+  const btnSair = document.querySelector('.btn-sair');
+  if(btnSair) btnSair.onclick = (e) => {
+      e.preventDefault();
+      fecharModalPlano();
+  };
+}
+
+function fecharModalPlano() {
+  document.getElementById('plano-modal').classList.add('hidden');
+  document.getElementById('plano-overlay').classList.add('hidden');
 }

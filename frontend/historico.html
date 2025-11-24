@@ -18,23 +18,21 @@
         <div class="content-wrapper">
             
             <!-- Cabeçalho / Navegação -->
-            <header> 
-                <nav> 
-                    <ul class="barra_externa_navegação">
+            <header>
+            <nav>
+                <div class="barra_externa_navegação">
+                <img id="logo_lumi" src="imagens/logo_lumi.png" alt="Logo">
 
-                        <img id="logo_lumi" src="imagens/logo_lumi.png" alt="Logo">
+                <ul class="barra_interna_navegação">
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="historico.html">Histórico</a></li>
+                    <li><a href="#">Perfil</a></li>
+                    <li><a href="#" id="logout-button">Sair</a></li>
+                </ul>
 
-                        <ul class="barra_interna_navegação">
-                            <li><a href="index.html">Início</a></li>
-                            <li><a href="historico.html">Histórico</a></li>
-                            <li><a href="#">Perfil</a></li>
-                            <li><a href="#" id="logout-button">Sair</a></li> 
-                        </ul>
-
-                        <li><a id="novo_roteiro_menu_superior" href="index.html">+ Novo Roteiro</a></li>
-
-                    </ul>
-                </nav>
+                <a id="novo_roteiro_menu_superior" href="index.html">+ Novo Roteiro</a>
+                </div>
+            </nav>
             </header>
 
             <!-- Conteúdo Principal -->
@@ -101,6 +99,30 @@
             <!-- Conteúdo dos filtros aqui -->
         </div>
     </div>
+
+    <!-- Modal de Visualização de Plano -->
+<div id="plano-overlay" class="overlay hidden"></div>
+<div id="plano-modal" class="plano-modal hidden">
+  <div class="plano-conteudo">
+    <button id="close-plano" class="btn-close">&times;</button>
+    <h2 id="plano-titulo">Título do plano</h2>
+    <p id="plano-data">Criado em --/--/----</p>
+
+    <p id="modal-progresso-texto" class="card-progress-text" style="margin-bottom: 5px;">0/0 concluídos</p>
+
+    <div class="progress-background">
+      <div id="plano-progress" class="progress-bar"></div>
+    </div>
+
+    <div id="plano-tarefas" class="lista-tarefas"></div>
+
+    <div class="plano-botoes">
+      <button class="btn-excluir">Excluir plano</button>
+      <button class="btn-sair" href="historico.html">Sair</button>
+      <button class="btn-concluido">Concluído</button>
+    </div>
+  </div>
+</div>
 
     <!-- Carrega o arquivo JavaScript -->
     <script src="historico.js"></script>

@@ -14,24 +14,23 @@
 
 <body>
     
-    <header> <!-- Cabeçario do site -->
-        <nav> <!-- Barra de navegação superior -->
-            <ul class="barra_externa_navegação">
+    <header>
+    <nav>
+        <div class="barra_externa_navegação">
+        <img id="logo_lumi" src="imagens/logo_lumi.png" alt="Logo">
 
-                <img id="logo_lumi" src="imagens/logo_lumi.png" alt="Logo">
+        <ul class="barra_interna_navegação">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="historico.html">Histórico</a></li>
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#" id="logout-button">Sair</a></li>
+        </ul>
 
-                <ul class="barra_interna_navegação">
-                    <li><a href="index.html">Início</a></li>
-                    <li><a href="historico.html">Histórico</a></li>
-                    <li><a href="#">Perfil</a></li>
-                    <li><a href="#" id="logout-button">Sair</a></li> 
-                </ul>
-
-                <li><a id="novo_roteiro_menu_superior" href="#">+ Novo Roteiro</a></li>
-
-            </ul>
-        </nav>
+        <a id="novo_roteiro_menu_superior" href="index.html">+ Novo Roteiro</a>
+        </div>
+    </nav>
     </header>
+
 
     <main>
         <article id="container_gerar_roteiro">
