@@ -4,110 +4,111 @@ from fastapi.testclient import TestClient
 from main import app
 from rotas import rotinas
 
-
 client = TestClient(app)
 
+# --- FIXTURES ---
 
-# Define a fixture usada para SIMULAÇÃO DE UM BANCO DE DADOS falso
 @pytest.fixture
 def mock_db(monkeypatch):
-    """Mock da sessão de banco usada pelo endpoint, pra evitar usar o banco original"""
+    """Simula o Banco de Dados"""
     mock_session = Mock()
-
-    # o add() e commit() precisam existir, mesmo que não façam nada
-    mock_session.add = Mock() # Usa o mock para simular as existências
+    mock_session.add = Mock()
     mock_session.commit = Mock()
-
+    
+    # Simula o refresh atribuindo um ID caso o objeto não tenha
     def fake_refresh(obj):
-        setattr(obj, "id", 1) # simula a parte de return do id para voltar 1 e não dar erro de tentativa com None pela ausência da função refresh
-    mock_session.refresh = Mock(side_effect=fake_refresh) # chama a função como no comportamento normal
+        if not hasattr(obj, 'id') or obj.id is None:
+            obj.id = 1
+    mock_session.refresh = Mock(side_effect=fake_refresh)
 
-
-    # substitui a dependência get_db no FastAPI
-    monkeypatch.setattr("rotas.rotinas.pegar_sessao", lambda: mock_session)
+    # Substitui a dependência de banco na rota
     app.dependency_overrides[rotinas.pegar_sessao] = lambda: mock_session
-
     return mock_session
 
-
-# Define a fixture usada para SIMULAÇÃO DE UM USUÁRIO VÁLIDO
 @pytest.fixture
-def mock_usuario(monkeypatch):
-    """Simula a verificação de token para retornar um usuário válido que possa ser usado no teste"""
-    from rotas import rotinas
-    usuario_falso = Mock() # Usa o mock para simular um usuário no molde
-    usuario_falso.id = 1 # dá um id previsível pra ele
-    app.dependency_overrides[rotinas.verificar_token] = lambda: usuario_falso # completa a dependência exigida
+def mock_usuario():
+    """Simula um usuário logado"""
+    usuario_falso = Mock()
+    usuario_falso.id = 1
+    # Substitui a dependência de token na rota
+    app.dependency_overrides[rotinas.verificar_token] = lambda: usuario_falso
     return usuario_falso
 
+@pytest.fixture
+def mock_logger(monkeypatch):
+    """Ignora a função de registrar logs para não dar erro no teste"""
+    mock_log = Mock()
+    monkeypatch.setattr("rotas.rotinas.registrar_acao", mock_log)
+    return mock_log
 
 
-# Teste 1, fazendo a tentativa de marcar uma rotina concluída de forma válida
-def test_marcar_concluida_rotina_valida(mock_db, mock_usuario, monkeypatch):
-    # usuário e banco de dados já injetados pelas funções criadas
-    # Criação da rotina associada ao usuário
+def test_marcar_concluida_rotina_valida(mock_db, mock_usuario, mock_logger):
+    #  Dados da rotina que será retornada pelo banco
     rotina_falsa = Mock()
-    rotina_falsa.id = 1
-    rotina_falsa.id_usuario = mock_usuario.id
-    rotina_falsa.titulo = "Revisão de Cálculo I"
-    rotina_falsa.conteudo = "Derivadas e integrais"
-    rotina_falsa.criado_em = "2025-11-08 19:30:00"
+    rotina_falsa.id = 10
+    rotina_falsa.id_usuario = mock_usuario.id  # ID 1
+    rotina_falsa.titulo = "Estudar Python"
+    rotina_falsa.concluido = False
+    
+    # O Pydantic exige que esses campos sejam strings, não Mocks vazios
+    rotina_falsa.conteudo = "Conteúdo detalhado da rotina" 
+    rotina_falsa.criado_em = "2025-11-26 12:00:00" 
+
+    # Configuração do Mock
+    mock_query = Mock()
+    mock_query.filter.return_value = mock_query # Permite .filter().filter()
+    mock_query.first.return_value = rotina_falsa # Retorna o objeto preenchido
+    mock_db.query.return_value = mock_query
+
+    # Execução
+    response = client.patch("/rotinas/10/concluir")
+
+    # Validações
+    assert response.status_code == 200
+    data = response.json()
+    assert data["id"] == 10
+    assert data["conteudo"] == "Conteúdo detalhado da rotina"
+
+    # Verifica se o commit foi chamado no banco
+    mock_db.commit.assert_called_once()
+
+    # CHECK DO OBJETO Garante que a lógica mudou o valor na memória CONCLUIDO = true
+    assert rotina_falsa.concluido is True
+
+
+def test_marcar_concluida_rotina_inexistente(mock_db, mock_usuario, mock_logger):
+    #  Configuração do Mock para NÃO achar nada
+    mock_query = Mock()
+    mock_query.filter.return_value = mock_query
+    mock_query.first.return_value = None  # Simula banco vazio para esse ID
+    
+    mock_db.query.return_value = mock_query
+
+    #  Execução com ID inexistente
+    response = client.patch("/rotinas/999/concluir")
+
+    #  Validação
+    assert response.status_code == 404
+    assert response.json()["detail"] == "Rotina não encontrada."
+
+
+def test_marcar_concluida_rotina_de_outro_usuario(mock_db, mock_usuario, mock_logger):
+    #  Dados da rotina de OUTRA pessoa
+    rotina_falsa = Mock()
+    rotina_falsa.id = 20
+    rotina_falsa.id_usuario = 55  # ID diferente do usuário logado (que é 1)
     rotina_falsa.concluido = False
 
-    # Associação da rotina com o banco de dados falso
+    # Configuração do Mock
     mock_query = Mock()
-    mock_query.filter.return_value.first.return_value = rotina_falsa
+    mock_query.filter.return_value = mock_query
+    mock_query.first.return_value = rotina_falsa # O banco ACHOU a rotina
+    
     mock_db.query.return_value = mock_query
 
-    # Faz a tentativa de concluir já aplicando o id da rotina definido
-    response = client.patch("/rotinas/1/concluir")
+    #  Execução
+    response = client.patch("/rotinas/20/concluir")
 
-    # Validações
-    assert response.status_code == 200 # valida que foi uma tentativa de sucesso
-    body = response.json()
-
-    assert body["id"] == 1 # valida que o id continua 1
-    assert body["titulo"] == "Revisão de Cálculo I" # valida que o titulo continua o mesmo
-    assert body["conteudo"] == "Derivadas e integrais" # valida que o conteudo também é o mesmo da rotina marcada
-    assert body["criado_em"] == "2025-11-08 19:30:00" # valida que a data de criação é a mesma
-    assert body["concluido"] == True # valida que houve mudança no status para concluída
-
-
-# Teste 2, fazendo a tentativa de marcar uma rotina concluída sem ela existir
-def test_marcar_concluida_rotina_inexistente(mock_db, mock_usuario, monkeypatch):
-    # usuário e banco de dados já injetados pelas funções criadas
-    # Sem criação de qualquer rotina
-
-    mock_query = Mock()
-    mock_query.filter.return_value.first.return_value = None  # Simula não encontrar rotina
-    mock_db.query.return_value = mock_query
-
-    # Faz a tentativa de concluir com um id que não é associado a nenhuma rotina
-    response = client.patch("/rotinas/2/concluir")
-
-    # Validações
-    assert response.status_code == 404 # valida que o status é erro de not found
-
-
-# Teste 3, fazendo a tentativa de marcar uma rotina que não é associada ao id do usuário como concluída
-def test_marcar_concluida_rotina_nao_associada_ao_user(mock_db, mock_usuario, monkeypatch):
-    # usuário e banco de dados já injetados pelas funções criadas
-    # Criação da rotina sem ser associada ao id do usuário (1)
-    rotina_falsa = Mock()
-    rotina_falsa.id = 3
-    rotina_falsa.id_usuario = 5 # diferente do mock_usuario.id
-    rotina_falsa.titulo = "Álgebra Linear"
-    rotina_falsa.conteudo = "Geometria Analítica"
-    rotina_falsa.criado_em = "2025-11-08 21:15:00"
-    rotina_falsa.concluido = False
-
-    # Associação da rotina com o banco de dados falso
-    mock_query = Mock()
-    mock_query.filter.return_value.first.return_value = rotina_falsa
-    mock_db.query.return_value = mock_query
-
-    # Faz a tentativa de concluir já aplicando o id da rotina definido
-    response = client.patch("/rotinas/3/concluir")
-
-    # Validações
-    assert response.status_code == 403 # valida que o status é erro de proibido
+    #  Validação
+    assert response.status_code == 403
+    assert response.json()["detail"] == "Sem permissão."
