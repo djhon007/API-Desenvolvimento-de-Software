@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import Mock
 from fastapi.testclient import TestClient
 from main import app
+from rotas import rotinas
 
 client = TestClient(app)
 
@@ -21,9 +22,10 @@ def mock_db(monkeypatch):
     mock_session.refresh = Mock(side_effect=fake_refresh) # chama a função como no comportamento normal
 
 
-
     # substitui a dependência get_db no FastAPI
     monkeypatch.setattr("rotas.rotinas.pegar_sessao", lambda: mock_session)
+    app.dependency_overrides[rotinas.pegar_sessao] = lambda: mock_session
+
     return mock_session
 
 
@@ -40,7 +42,6 @@ def mock_usuario(monkeypatch):
 
 # Teste 1, criação de uma agenda válida
 def test_criar_agenda_sucesso(mock_db, mock_usuario, monkeypatch):
-    from rotas import rotinas
 
     # Usa o mock para simular a resposta do Gemini
     mock_saida = Mock()
@@ -71,3 +72,4 @@ def test_criar_agenda_sucesso(mock_db, mock_usuario, monkeypatch):
     assert len(body["conteudo"].split("\n")) == 3 # valida que o conteúdo junta todas as divisões de dias de estudo
     assert "criado_em" in body # valida que a informação de data de criação também é retornada 
     assert "conteudo" in body  # pra garantir que o texto gerado a partir da divisão de conteúdos está presente
+    #assert "concluido" in body # valida que há estado de conclusão sendo indicado na rotina
