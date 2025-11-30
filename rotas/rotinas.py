@@ -61,9 +61,6 @@ async def listar_rotinas_usuario_logado(
     """Lista todas as rotinas criadas pelo usuário autenticado"""
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        # id_usuario = int(payload.get("sub"))
-        # if id_usuario is None:
-        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido.")
 
         sub_claim = payload.get("sub") # primeiro isola essa captura, porque pode ser none, então não pode tentar converter pra int agora
         if sub_claim is None: # confere se é none
