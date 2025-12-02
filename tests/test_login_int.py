@@ -74,3 +74,26 @@ def test_login_inexistente(monkeypatch):
     resposta = client.post("/auth/login", json={"email": "outro@teste.com", "senha": "senhaErrada"}) # post de credenciais não cadastradas
     assert resposta.status_code == 400 # valida que houve erro ao tentar login em credenciais inexistentes
     assert resposta.json()["detail"] == "Usuário não encontrado ou credenciais inválidas." # valida o retorno de detalhamento do erro correto
+
+    # Teste 4, usando um envio para login de usuário que está inativo
+def test_login_inativo(monkeypatch):
+    usuario = Usuario(
+        nome="Teste4",
+        email="ultimo@teste.com",
+        senha=bcrypt_context.hash("senha789"),
+        ativo=False, # usuário inativo
+        admin=False
+    )
+
+    # Simula o acesso a um banco de dados "falso"
+    mock_db = Mock()
+    mock_db.query.return_value.filter.return_value.first.return_value = usuario # simula uma validação desse usuario no mock_db
+
+    # Usa monkeypatch do pytest pra aplicar esse mock no endpoint como a base
+    from rotas import auth
+    # substitui a dependência no app do FastAPI para pular essa necessidade de Session do comportamento completo da função
+    app.dependency_overrides[auth.pegar_sessao] = lambda: mock_db
+
+    resposta = client.post("/auth/login", json={"email": "ultimo@teste.com", "senha": "senha789"}) # post das credenciais não correspondentes pra login no client
+    assert resposta.status_code == 400 # valida que houve erro ao tentar login de user inativo
+    assert resposta.json()["detail"] == "Usuário inativo." # valida o retorno de detalhamento do erro correto

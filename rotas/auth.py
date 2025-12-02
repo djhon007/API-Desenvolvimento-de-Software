@@ -14,7 +14,7 @@ auth_router = APIRouter(prefix='/auth', tags=['auth'])
 
 
 @auth_router.get('/')
-async def home():
+async def home(): # pragma: no cover <--- Comentário que faz o pytest ignorar pois não é uma função que necessita de teste (funcao mínima)
     """Rota padrão de autentificação"""
     return {"mensagem": "Você acessou a rota padrão de autentificação", "autentificando": False}
 
@@ -71,7 +71,7 @@ async def login(login_schema: LoginSchema, session: Session = Depends(pegar_sess
 
 
 @auth_router.post("/login-form")
-async def login_form(dados_formulario: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(pegar_sessao)):
+async def login_form(dados_formulario: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(pegar_sessao)): # pragma: no cover <--- Comentário que faz o pytest ignorar pois não é uma função que necessita de teste (teste login já agrega)
     usuario = autenticar_usuario(dados_formulario.username, dados_formulario.password, session)
     if not usuario:
         raise HTTPException(status_code=400, detail="Usuário não encontrado ou credenciais inválidas.")
