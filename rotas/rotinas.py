@@ -111,3 +111,36 @@ async def marcar_rotina_concluida(
     registrar_acao(usuario.id, f"/rotinas/{rotina_id}/concluir", "Rotina marcada como concluída")  
     session.refresh(rotina)
     return rotina
+
+@rotinas_router.delete("/{rotina_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def excluir_rotina(
+    rotina_id: int,
+    session: Session = Depends(pegar_sessao),
+    usuario: Usuario = Depends(verificar_token) # Garante que está logado
+):
+    """
+    Exclui uma rotina específica.
+    """
+    # 1. Busca a rotina no banco
+    rotina = session.query(Rotina).filter(Rotina.id == rotina_id).first()
+
+    # 2. Se não existir, erro 404
+    if not rotina:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Rotina não encontrada."
+        )
+
+    # 3. SEGURANÇA: Verifica se a rotina pertence ao usuário logado
+    if rotina.id_usuario != usuario.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Você não tem permissão para excluir esta rotina."
+        )
+
+    # 4. Deleta a rotina
+    session.delete(rotina)
+    session.commit()
+
+    # Retorna nada (204 No Content é o padrão para deleção bem-sucedida)
+    return None
