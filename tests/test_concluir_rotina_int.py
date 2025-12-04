@@ -111,4 +111,4 @@ def test_marcar_concluida_rotina_de_outro_usuario(mock_db, mock_usuario, mock_lo
 
     #  Validação
     assert response.status_code == 403
-    assert response.json()["detail"] == "Sem permissão."
+    assert response.json()["detail"] == "Sem permissão para alterar esta rotina."

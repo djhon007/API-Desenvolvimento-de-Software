@@ -1,28 +1,25 @@
-from pydantic import BaseModel
-from typing import Optional
-from typing import List
+from pydantic import BaseModel, ConfigDict
+from typing import Optional, List
+import re
 
-#define o formato de dados esperados pela API
+# Definição do formato de dados (Schemas)
+
 class UsuarioSchema(BaseModel):
     nome: str
     email: str
     senha: str
-    ativo: Optional[bool]
-    admin: Optional[bool]
+    ativo: Optional[bool] = None
+    admin: Optional[bool] = None
 
-    class Config:
-        from_attributes = True
+    # Nova sintaxe do Pydantic V2 (substitui class Config)
+    model_config = ConfigDict(from_attributes=True)
 
-
-from pydantic import BaseModel
-from typing import List
-import re
 
 class Entrada(BaseModel):
     topico_de_estudo: str
     prazo: str
 
-    #metodos para entrada
+    # Métodos auxiliares mantidos iguais
     def prazo_numero(self):
         match = re.search(r"\d+", self.prazo)
         return int(match.group()) if match else 0
@@ -48,18 +45,18 @@ class Saida(BaseModel):
 
 
 class RotinaResponse(BaseModel):
-    id :int
+    id: int
     titulo: str
     conteudo: str
     criado_em: str
 
-    class Config:
-        from_attributes = True
+    # Nova sintaxe do Pydantic V2
+    model_config = ConfigDict(from_attributes=True)
 
-#login
+
 class LoginSchema(BaseModel):
     email: str
     senha: str
 
-    class Config:
-        from_attributes = True
+    # Nova sintaxe do Pydantic V2
+    model_config = ConfigDict(from_attributes=True)

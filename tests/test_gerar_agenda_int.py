@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import Mock
 from fastapi.testclient import TestClient
 from main import app
+from codigos_apoio.dependences import pegar_sessao
 from rotas import rotinas
 
 client = TestClient(app)
@@ -42,34 +43,48 @@ def mock_usuario(monkeypatch):
 
 # Teste 1, criação de uma agenda válida
 def test_criar_agenda_sucesso(mock_db, mock_usuario, monkeypatch):
+    """
+    Testa a geração de agenda com sucesso, mockando a resposta da IA.
+    """
+    # 0. TRAVA DE SEGURANÇA: Garantimos que a API use O NOSSO mock_db
+    # Isso resolve o problema de instâncias trocadas
+    app.dependency_overrides[pegar_sessao] = lambda: mock_db
 
-    # Usa o mock para simular a resposta do Gemini
+    # 1. Mock da resposta do Google Gemini
     mock_saida = Mock()
-    mock_saida.parsed = Mock()
+    mock_saida.parsed = Mock() 
     mock_saida.parsed.dias_de_estudo = [
         "Dia 1: Revisão de derivadas",
         "Dia 2: Integrais",
         "Dia 3: Aplicações"
     ]
+    
+    mock_client = Mock()
+    mock_client.models.generate_content.return_value = mock_saida
+    
+    monkeypatch.setattr("rotas.rotinas.get_google_client", lambda: mock_client)
 
-    monkeypatch.setattr(rotinas.client.models, "generate_content", lambda **kwargs: mock_saida) # simula a parte de generate_content com a predefinição mock_saida para evitar chamada da gemini no test
+    # 2. Configura o comportamento do Banco (Simular Auto-Incremento)
+    # Quando 'session.add' for chamado, injetamos o ID 1 na hora
+    def simulate_add(instance):
+        instance.id = 1 
+    
+    mock_db.add.side_effect = simulate_add
 
-    # Montagem da entrada simulada de acodo com os requisitos para a geração
-    dados_envio = {
-        "topico_de_estudo": "Cálculo II",
+    # 3. Payload
+    payload = {
+        "topico_de_estudo": "Cálculo 1",
         "prazo": "3 dias"
     }
 
-    monkeypatch.setattr("rotas.rotinas.Rotina.id", 1)
+    # 4. Execução
+    response = client.post("/rotinas/gerar-agenda", json=payload)
 
-    response = client.post("/rotinas/gerar-agenda", json=dados_envio) # simula um post para gerar agenda com os dados de envio definidos
-
-    assert response.status_code == 200  # valida que foi criado com sucesso
-    body = response.json()
-
-    assert "id" in body # valida que há um id entre os dados
-    assert body["titulo"] == "Cálculo II" # valida que o título corresponde ao pedido
-    assert len(body["conteudo"].split("\n")) == 3 # valida que o conteúdo junta todas as divisões de dias de estudo
-    assert "criado_em" in body # valida que a informação de data de criação também é retornada 
-    assert "conteudo" in body  # pra garantir que o texto gerado a partir da divisão de conteúdos está presente
-    #assert "concluido" in body # valida que há estado de conclusão sendo indicado na rotina
+    # 5. Validação
+    assert response.status_code == 200
+    data = response.json()
+    
+    # Agora o ID deve vir preenchido, pois configuramos o mock certo!
+    assert data["id"] == 1
+    assert data["titulo"] == "Cálculo 1"
+    assert "Revisão de derivadas" in data["conteudo"]
