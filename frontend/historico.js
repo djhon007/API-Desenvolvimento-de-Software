@@ -1,9 +1,12 @@
+// ==========================================
+// CARREGAR ROTEIROS AO ENTRAR NA PÁGINA
+// ==========================================
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem("access_token");
   const containerDePlanos = document.getElementById("grade-de-planos");
 
   if (!token) {
-    alert("Acesso negado. Por favor, faça o login.");
+    alert("Acesso negado. Faça o login novamente.");
     window.location.href = "login.html";
     return;
   }
@@ -17,18 +20,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    if (response.status === 401) {
-      alert("Sessão expirada. Faça login novamente.");
-      localStorage.removeItem("access_token");
-      window.location.href = "login.html";
-      return;
-    }
-
     if (!response.ok) {
       if (response.status === 404) {
-        containerDePlanos.innerHTML = "<p class='page-subtitle'>Nenhum roteiro encontrado. Crie um na página 'Início'!</p>";
+        containerDePlanos.innerHTML =
+          "<p class='page-subtitle'>Nenhum roteiro encontrado. Crie um na página 'Início'!</p>";
       } else {
-        throw new Error('Falha ao buscar roteiros.');
+        throw new Error("Erro ao buscar roteiros.");
       }
       return;
     }
@@ -36,177 +33,201 @@ document.addEventListener('DOMContentLoaded', async () => {
     const roteiros = await response.json();
     containerDePlanos.innerHTML = '';
 
+    // ==========================================
+    // CRIAR CADA CARD
+    // ==========================================
     roteiros.forEach((roteiro, index) => {
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'plan-card';
-      // Damos um ID ao card para facilitar a busca depois, se precisar
-      cardDiv.id = `card-roteiro-${roteiro.id}`;
+      const card = document.createElement("div");
+      card.className = "plan-card";
+      card.id = `card-roteiro-${roteiro.id}`;
 
-      const totalDias = roteiro.conteudo.split('\n').length;
+      const totalDias = roteiro.conteudo.split("\n").length;
       const diasConcluidos = roteiro.concluido ? totalDias : 0;
-      const percentagem = (diasConcluidos / totalDias) * 100;
+      const porcentagem = (diasConcluidos / totalDias) * 100;
 
-      const previaDias = roteiro.conteudo.split('\n').slice(0, 2);
-      const dataObj = new Date(roteiro.criado_em.split(' ')[0]);
-      const dataFormatada = dataObj.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
-      const tituloFormatado = roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
+      const previaDias = roteiro.conteudo.split("\n").slice(0, 2);
+      const dataObj = new Date(roteiro.criado_em.split(" ")[0]);
+      const dataFormatada = dataObj.toLocaleDateString("pt-BR", { timeZone: "UTC" });
 
-      cardDiv.innerHTML = `
+      const tituloFormatado =
+        roteiro.titulo.charAt(0).toUpperCase() +
+        roteiro.titulo.slice(1).toLowerCase();
+
+      card.innerHTML = `
         <div class="card-header">
           <h2 class="card-title">${tituloFormatado}</h2>
           <p class="card-date">${dataFormatada}</p>
         </div>
+
         <div class="progress-background">
-          <div class="progress-bar" style="width: ${percentagem}%;"></div>
+          <div class="progress-bar" style="width: ${porcentagem}%"></div>
         </div>
+
         <p class="card-progress-text">${diasConcluidos}/${totalDias} dias concluídos</p>
-        
+
         <div class="card-tasks">
-          <p class="task-item">${previaDias[0] || '...'}</p>
-          <p class="task-item">${previaDias[1] || '...'}</p>
+          <p class="task-item">${previaDias[0] || "..."}</p>
+          <p class="task-item">${previaDias[1] || "..."}</p>
         </div>
-        
+
         <a href="#" class="btn-card" data-index="${index}">Ver plano</a>
       `;
-      containerDePlanos.appendChild(cardDiv);
+
+      containerDePlanos.appendChild(card);
     });
 
-    // Ativa os botões "Ver plano"
-    document.querySelectorAll('.btn-card').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+    // ==========================================
+    // EVENTOS DO BOTÃO "VER PLANO"
+    // ==========================================
+    document.querySelectorAll(".btn-card").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
         e.preventDefault();
-        const index = e.target.dataset.index;
-        // O segredo: Passamos o roteiro E o elemento do card (o pai do botão)
-        const cardElement = e.target.closest('.plan-card');
+        const index = btn.dataset.index;
+        const cardElement = btn.closest(".plan-card");
         abrirModalPlano(roteiros[index], cardElement);
       });
     });
 
-  } catch (error) {
-    console.error("Erro ao carregar roteiros:", error);
-    containerDePlanos.innerHTML = "<p class='page-subtitle'>Ocorreu um erro ao carregar seus roteiros.</p>";
+  } catch (err) {
+    console.error(err);
+    containerDePlanos.innerHTML =
+      "<p class='page-subtitle'>Ocorreu um erro ao carregar seus roteiros.</p>";
   }
 });
 
-// --- FUNÇÃO DO MODAL ATUALIZADA ---
+
+// ==========================================
+// FUNÇÃO DO MODAL
+// ==========================================
 function abrirModalPlano(roteiro, cardElement) {
-  const modal = document.getElementById('plano-modal');
-  const overlay = document.getElementById('plano-overlay');
+  const modal = document.getElementById("plano-modal");
+  const overlay = document.getElementById("plano-overlay");
   const token = localStorage.getItem("access_token");
 
-  // 1. Preenche dados básicos
-  const tituloFormatado = roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
-  document.getElementById('plano-titulo').textContent = tituloFormatado;
-  
-  const dataCriacao = roteiro.criado_em ? roteiro.criado_em.split(' ')[0] : '--/--/----';
-  document.getElementById('plano-data').textContent = "Criado em " + dataCriacao;
+  document.getElementById("plano-titulo").textContent =
+    roteiro.titulo.charAt(0).toUpperCase() + roteiro.titulo.slice(1).toLowerCase();
 
-  // 2. Gera Checkboxes
-  const tarefasDiv = document.getElementById('plano-tarefas');
-  tarefasDiv.innerHTML = '';
-  
-  const dias = roteiro.conteudo.split('\n');
+  const dataCriacao = roteiro.criado_em ? roteiro.criado_em.split(" ")[0] : "--/--/----";
+  document.getElementById("plano-data").textContent = "Criado em " + dataCriacao;
 
-  dias.forEach((dia, index) => {
-    if (dia.trim() !== '') {
-      const itemId = `modal-item-${index}`;
-      const itemDiv = document.createElement('div');
-      itemDiv.className = 'roteiro-item'; 
+  const tarefasDiv = document.getElementById("plano-tarefas");
+  tarefasDiv.innerHTML = "";
 
-      // Se o roteiro já estiver 100% concluído no banco, marca tudo
-      const isChecked = roteiro.concluido ? 'checked' : '';
+  const dias = roteiro.conteudo.split("\n");
+
+  dias.forEach((dia, i) => {
+    if (dia.trim() !== "") {
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "roteiro-item";
+
+      const isChecked = roteiro.concluido ? "checked" : "";
 
       itemDiv.innerHTML = `
-          <input type="checkbox" id="${itemId}" class="roteiro-checkbox" ${isChecked}>
-          <label for="${itemId}">
-              <span class="roteiro-titulo">${dia}</span>
-          </label>
+        <input type="checkbox" id="modal-item-${i}" class="roteiro-checkbox" ${isChecked}>
+        <label for="modal-item-${i}">
+          <span class="roteiro-titulo">${dia}</span>
+        </label>
       `;
+
       tarefasDiv.appendChild(itemDiv);
     }
   });
 
-  // 3. Sincronização Visual (Modal <-> Card)
-  const progressBarModal = document.getElementById('plano-progress');
-  const progressTextModal = document.getElementById('modal-progresso-texto');
-  const checkboxes = tarefasDiv.querySelectorAll('.roteiro-checkbox');
+  const checkboxes = tarefasDiv.querySelectorAll(".roteiro-checkbox");
   const totalCheckboxes = checkboxes.length;
 
-  // Elementos do Card de trás (que vamos atualizar)
-  const cardProgressBar = cardElement.querySelector('.progress-bar');
-  const cardProgressText = cardElement.querySelector('.card-progress-text');
+  const progressBar = document.getElementById("plano-progress");
+  const progressText = document.getElementById("modal-progresso-texto");
+
+  const cardProgressBar = cardElement.querySelector(".progress-bar");
+  const cardProgressText = cardElement.querySelector(".card-progress-text");
 
   function atualizarTudo() {
-      const marcados = tarefasDiv.querySelectorAll('.roteiro-checkbox:checked').length;
-      const porcentagem = totalCheckboxes > 0 ? (marcados / totalCheckboxes) * 100 : 0;
-      
-      // Atualiza Modal
-      progressBarModal.style.width = `${porcentagem}%`;
-      progressTextModal.textContent = `${marcados}/${totalCheckboxes} concluídos`;
+    const marcados = tarefasDiv.querySelectorAll(".roteiro-checkbox:checked").length;
+    const porcentagem = totalCheckboxes ? (marcados / totalCheckboxes) * 100 : 0;
 
-      // Atualiza Card (Lá no fundo)
-      if(cardProgressBar) cardProgressBar.style.width = `${porcentagem}%`;
-      if(cardProgressText) cardProgressText.textContent = `${marcados}/${totalCheckboxes} dias concluídos`;
+    progressBar.style.width = `${porcentagem}%`;
+    progressText.textContent = `${marcados}/${totalCheckboxes} concluídos`;
+
+    cardProgressBar.style.width = `${porcentagem}%`;
+    cardProgressText.textContent = `${marcados}/${totalCheckboxes} dias concluídos`;
   }
 
-  // Listeners para cliques individuais
-  checkboxes.forEach(cb => {
-      cb.addEventListener('click', atualizarTudo);
-  });
-
-  // --- BOTÃO CONCLUÍDO (COM INTEGRAÇÃO AO BANCO) ---
-  const btnConcluido = document.querySelector('.btn-concluido');
-  if (btnConcluido) {
-      // Truque para remover listeners antigos
-      const novoBtn = btnConcluido.cloneNode(true);
-      btnConcluido.parentNode.replaceChild(novoBtn, btnConcluido);
-      
-      novoBtn.addEventListener('click', async () => {
-          // 1. Visualmente marca tudo
-          checkboxes.forEach(cb => cb.checked = true);
-          atualizarTudo();
-
-          // 2. Envia para o Backend (SALVAR NO BANCO)
-          try {
-              const response = await fetch(`http://127.0.0.1:8000/rotinas/${roteiro.id}/concluir`, {
-                  method: 'PATCH',
-                  headers: {
-                      "Authorization": "Bearer " + token
-                  }
-              });
-
-              if (response.ok) {
-                  // Atualiza o objeto local também para não perder se fechar e abrir
-                  roteiro.concluido = true; 
-                  fecharModalPlano();
-              } else {
-                  alert("Erro ao salvar a conclusão no sistema.");
-              }
-          } catch (error) {
-              console.error(error);
-              alert("Erro de conexão ao tentar salvar.");
-          }
-      });
-  }
-
-  // Inicializa os valores ao abrir
+  checkboxes.forEach((cb) => cb.addEventListener("click", atualizarTudo));
   atualizarTudo();
 
-  // Mostrar Modal
-  modal.classList.remove('hidden');
-  overlay.classList.remove('hidden');
+  // ==========================================
+  // BOTÃO "CONCLUÍDO"
+  // ==========================================
+  const btnConcluir = document.querySelector(".btn-concluido");
 
-  // Fechar
-  document.getElementById('close-plano').onclick = fecharModalPlano;
+  if (btnConcluir) {
+    const novoBtn = btnConcluir.cloneNode(true);
+    btnConcluir.parentNode.replaceChild(novoBtn, btnConcluir);
+
+    novoBtn.addEventListener("click", async () => {
+      checkboxes.forEach((cb) => (cb.checked = true));
+      atualizarTudo();
+
+      try {
+        await fetch(`http://127.0.0.1:8000/rotinas/${roteiro.id}/concluir`, {
+          method: "PATCH",
+          headers: { "Authorization": "Bearer " + token }
+        });
+
+        roteiro.concluido = true;
+        fecharModalPlano();
+      } catch {
+        alert("Erro ao marcar como concluído.");
+      }
+    });
+  }
+
+  // ==========================================
+  // BOTÃO "EXCLUIR PLANO" (DO MODAL)
+  // ==========================================
+  const btnExcluirModal = document.querySelector(".btn-excluir");
+
+  if (btnExcluirModal) {
+    const novoBtnExcluir = btnExcluirModal.cloneNode(true);
+    btnExcluirModal.parentNode.replaceChild(novoBtnExcluir, btnExcluirModal);
+
+    novoBtnExcluir.addEventListener("click", async () => {
+      if (!confirm("Deseja realmente excluir este plano?")) return;
+
+      try {
+        const response = await fetch(`http://127.0.0.1:8000/rotinas/${roteiro.id}/excluir`, {
+          method: "DELETE",
+          headers: { "Authorization": "Bearer " + token }
+        });
+
+        if (response.ok) {
+          cardElement.remove();
+          fecharModalPlano();
+        } else {
+          alert("Erro ao excluir plano.");
+        }
+      } catch {
+        alert("Erro de conexão ao excluir.");
+      }
+    });
+  }
+
+  modal.classList.remove("hidden");
+  overlay.classList.remove("hidden");
+
+  document.getElementById("close-plano").onclick = fecharModalPlano;
   overlay.onclick = fecharModalPlano;
-  const btnSair = document.querySelector('.btn-sair');
-  if(btnSair) btnSair.onclick = (e) => {
-      e.preventDefault();
-      fecharModalPlano();
-  };
+
+  const btnSair = document.querySelector(".btn-sair");
+  if (btnSair) btnSair.onclick = fecharModalPlano;
 }
 
+
+// ==========================================
+// FECHAR MODAL
+// ==========================================
 function fecharModalPlano() {
-  document.getElementById('plano-modal').classList.add('hidden');
-  document.getElementById('plano-overlay').classList.add('hidden');
+  document.getElementById("plano-modal").classList.add("hidden");
+  document.getElementById("plano-overlay").classList.add("hidden");
 }

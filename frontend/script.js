@@ -1,11 +1,15 @@
 const token = localStorage.getItem("access_token");
 
+
+
 if (!token) {
     alert("Acesso negado. Por favor, faça o login.");
     window.location.href = "login.html";
 }
 
 const URL = "http://127.0.0.1:8000/rotinas/gerar-agenda";
+
+let roteiroTemporario = null;
 
 async function GerarAgenda(){
 
@@ -49,9 +53,11 @@ async function GerarAgenda(){
 
         const data = await response.json();
 
+        roteiroTemporario = data;
+
         // mostrar o retorno na tela
-        const antigo = document.getElementById("resultado-container");
-        if (antigo) antigo.remove();
+        const antigo = document.getElementById("roteiro-container");
+if (antigo) antigo.remove();
 
         console.log("Resposta completa da API:", data);
 
@@ -102,6 +108,33 @@ async function GerarAgenda(){
             <button class="btn-secundario">Exportar PDF</button>
             <button class="btn-secundario">Compartilhar</button>
         `;
+
+
+        const btnSalvar = botoesDiv.querySelector(".btn-secundario");
+
+btnSalvar.addEventListener("click", async () => {
+    if (!roteiroTemporario) return;
+
+    const response = await fetch("http://127.0.0.1:8000/rotinas/salvar", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+        body: JSON.stringify({
+            titulo: roteiroTemporario.titulo,
+            conteudo: roteiroTemporario.conteudo
+        })
+    });
+
+    if (response.ok) {
+        alert("Roteiro salvo com sucesso!");
+        roteiroTemporario = null; // deixa de ser temporário
+    } else {
+        alert("Erro ao salvar o roteiro.");
+    }
+});
+
         roteiroCard.appendChild(botoesDiv);
 
         // diciona o card completo à página
@@ -165,3 +198,14 @@ function setupProgressoListeners() {
         checkbox.addEventListener("click", atualizarProgresso);
     });
 }
+
+window.addEventListener("beforeunload", () => {
+    if (roteiroTemporario) {
+        // apaga visualmente
+        const card = document.getElementById("roteiro-container");
+        if (card) card.remove();
+
+        // e descarta o roteiro temporário
+        roteiroTemporario = null;
+    }
+});

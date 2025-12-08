@@ -63,3 +63,8 @@ class LoginSchema(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class RotinaCreate(BaseModel):
+    titulo: str
+    conteudo: str

@@ -6,7 +6,7 @@ import os
 from sqlalchemy.orm import Session
 from codigos_apoio.dependences import pegar_sessao, verificar_token
 from database.models import Rotina, Usuario
-from codigos_apoio.schemas import Entrada, Saida, RotinaResponse
+from codigos_apoio.schemas import Entrada, Saida, RotinaResponse, RotinaCreate
 from datetime import datetime
 from codigos_apoio.dependences import oauth2_schema, SECRET_KEY, ALGORITHM
 from jose import jwt, JWTError
@@ -17,7 +17,7 @@ client = genai.Client(api_key=os.getenv("GENAI_API_KEY"))
 rotinas_router = APIRouter(prefix="/rotinas", tags=["rotinas"])
 
 
-@rotinas_router.post("/gerar-agenda", response_model=RotinaResponse)
+@rotinas_router.post("/gerar-agenda")
 def gerar_agenda(req: Entrada, session: Session = Depends(pegar_sessao), usuario=Depends(verificar_token)):
     """Gera um plano de estudo completo com base no Gemini"""
     prompt = f"""
@@ -39,18 +39,11 @@ O estudante informou:
     agenda: Saida = response.parsed
     agenda_texto = "\n".join(agenda.dias_de_estudo)
 
-    nova_rotina = Rotina(
-        titulo=req.topico_de_estudo,
-        conteudo=agenda_texto,
-        criado_em=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        id_usuario=usuario.id
-    )
+    return {
+    "titulo": req.topico_de_estudo,
+    "conteudo": agenda_texto
+}
 
-    session.add(nova_rotina)
-    session.commit()
-    registrar_acao(usuario.id, "/rotinas/gerar-agenda", f"Nova rotina criada: {req.topico_de_estudo}")  
-    session.refresh(nova_rotina)
-    return nova_rotina
 
 
 @rotinas_router.get("/listar", response_model=list[RotinaResponse])
@@ -96,4 +89,42 @@ async def marcar_rotina_concluida(
     session.commit()
     registrar_acao(usuario.id, f"/rotinas/{rotina_id}/concluir", "Rotina marcada como concluída")  
     session.refresh(rotina)
+    return rotina
+
+
+@rotinas_router.post("/salvar", response_model=RotinaResponse)
+def salvar_roteiro(roteiro: RotinaCreate,
+                   usuario=Depends(verificar_token),
+                   session=Depends(pegar_sessao)):
+
+    nova_rotina = Rotina(
+        titulo=roteiro.titulo,
+        conteudo=roteiro.conteudo,
+        criado_em=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        id_usuario=usuario.id
+    )
+
+    session.add(nova_rotina)
+    session.commit()
+    session.refresh(nova_rotina)
+
+    return nova_rotina
+
+@rotinas_router.delete("/{rotina_id}/excluir", response_model=RotinaResponse)
+def excluir_rotina(
+    rotina_id: int,
+    session: Session = Depends(pegar_sessao),
+    usuario=Depends(verificar_token)
+):
+    rotina = session.query(Rotina).filter(Rotina.id == rotina_id).first()
+
+    if not rotina:
+        raise HTTPException(status_code=404, detail="Rotina não encontrada.")
+
+    if rotina.id_usuario != usuario.id:
+        raise HTTPException(status_code=403, detail="Sem permissão para excluir esta rotina.")
+
+    session.delete(rotina)
+    session.commit()
+
     return rotina
