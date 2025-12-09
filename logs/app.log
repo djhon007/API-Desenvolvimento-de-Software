@@ -99,3 +99,7 @@ AttributeError: module 'bcrypt' has no attribute '__about__'
 2025-12-08 17:09:48,252 - INFO - LuminAPI - [2025-12-08 17:09:48] Usuário 1 acessou /rotinas/listar. 11 rotinas listadas
 2025-12-08 17:12:39,168 - INFO - LuminAPI - [2025-12-08 17:12:39] Usuário 1 acessou /rotinas/listar. 11 rotinas listadas
 2025-12-08 17:15:47,385 - INFO - LuminAPI - [2025-12-08 17:15:47] Usuário 1 acessou /rotinas/listar. 10 rotinas listadas
+2025-12-08 19:29:31,139 - INFO - LuminAPI - Logging configurado com sucesso. Sistema pronto para registrar eventos.
+2025-12-08 19:30:08,344 - INFO - google_genai.models - AFC is enabled with max remote calls: 10.
+2025-12-08 19:30:10,945 - INFO - httpx - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent "HTTP/1.1 200 OK"
+2025-12-08 19:30:27,706 - INFO - LuminAPI - [2025-12-08 19:30:27] Usuário 1 acessou /rotinas/listar. 8 rotinas listadas

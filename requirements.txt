@@ -2,7 +2,7 @@ alembic==1.17.1
 annotated-doc==0.0.3
 annotated-types==0.7.0
 anyio==4.11.0
-bcrypt==4.1.2
+bcrypt==4.0.1
 beautifulsoup4==4.14.2
 cachetools==6.2.1
 certifi==2025.10.5
