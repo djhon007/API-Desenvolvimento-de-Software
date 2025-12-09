@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from rotas.auth import auth_router
 from rotas.rotinas import rotinas_router
@@ -22,6 +22,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.options("/{full_path:path}")
+async def options_handler(full_path: str):
+    return Response(status_code=200)
 
 oauth2_schema = OAuth2PasswordBearer(tokenUrl="auth/login-form")
 #registrando as rotas
