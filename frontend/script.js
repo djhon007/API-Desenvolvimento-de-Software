@@ -1,13 +1,12 @@
+const BASE_URL = "https://api-desenvolvimento-de-software-production.up.railway.app";
 const token = localStorage.getItem("access_token");
-
-
 
 if (!token) {
     alert("Acesso negado. Por favor, faça o login.");
     window.location.href = "login.html";
 }
 
-const URL = "http://127.0.0.1:8000/rotinas/gerar-agenda";
+const URL = `${BASE_URL}/rotinas/gerar-agenda`;
 
 let roteiroTemporario = null;
 
@@ -25,17 +24,16 @@ async function GerarAgenda(){
         method: 'POST',
         headers: {
             "Content-Type": "application/json",
-
             "Authorization": "Bearer " + token 
         },
         body: JSON.stringify(body)
     }
-    console.log(URL)
 
     const loadingOverlay = document.getElementById('loading-overlay'); 
 
     try {
         loadingOverlay.classList.remove('hidden');
+
         const response = await fetch(URL,init)
 
         if (response.status === 401) {
@@ -52,19 +50,13 @@ async function GerarAgenda(){
         }
 
         const data = await response.json();
-
         roteiroTemporario = data;
 
-        // mostrar o retorno na tela
         const antigo = document.getElementById("roteiro-container");
-if (antigo) antigo.remove();
+        if (antigo) antigo.remove();
 
-        console.log("Resposta completa da API:", data);
-
-        // transforma o conteúdo em linhas separadas
         const dias = data.conteudo.split("\n");
 
-        // declarando bonitinho
         const roteiroCard = document.createElement("div");
         roteiroCard.id = "roteiro-container";
         roteiroCard.className = "roteiro-card";
@@ -87,7 +79,6 @@ if (antigo) antigo.remove();
             const itemDiv = document.createElement("div");
             itemDiv.className = "roteiro-item";
             
-            // HTML do checkbox
             itemDiv.innerHTML = `
                 <input type="checkbox" id="${itemId}" class="roteiro-checkbox">
                 <label for="${itemId}">
@@ -97,49 +88,42 @@ if (antigo) antigo.remove();
             listaContainer.appendChild(itemDiv);
         });
 
-        // montar
         roteiroCard.appendChild(listaContainer);
 
-        // botões (ainda visuais, sem função)
         const botoesDiv = document.createElement("div");
         botoesDiv.className = "roteiro-botoes";
         botoesDiv.innerHTML = `
-            <button class="btn-secundario">Salvar</button>
-            <button class="btn-secundario">Exportar PDF</button>
-            <button class="btn-secundario">Compartilhar</button>
+            <button class="btn-secundario" id="btn-salvar">Salvar</button>
         `;
 
+        // BOTÃO SALVAR
+        document.addEventListener("click", async (e) => {
+            if (e.target.id === "btn-salvar") {
+                const response = await fetch(`${BASE_URL}/rotinas/salvar`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify({
+                        titulo: roteiroTemporario.titulo,
+                        conteudo: roteiroTemporario.conteudo
+                    })
+                });
 
-        const btnSalvar = botoesDiv.querySelector(".btn-secundario");
-
-btnSalvar.addEventListener("click", async () => {
-    if (!roteiroTemporario) return;
-
-    const response = await fetch("http://127.0.0.1:8000/rotinas/salvar", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + token
-        },
-        body: JSON.stringify({
-            titulo: roteiroTemporario.titulo,
-            conteudo: roteiroTemporario.conteudo
-        })
-    });
-
-    if (response.ok) {
-        alert("Roteiro salvo com sucesso!");
-        roteiroTemporario = null; // deixa de ser temporário
-    } else {
-        alert("Erro ao salvar o roteiro.");
-    }
-});
+                if (response.ok) {
+                    alert("Roteiro salvo com sucesso!");
+                    roteiroTemporario = null;
+                } else {
+                    alert("Erro ao salvar o roteiro.");
+                }
+            }
+        });
 
         roteiroCard.appendChild(botoesDiv);
 
-        // diciona o card completo à página
         document.querySelector("main").appendChild(roteiroCard);
-        // lógica da barra de progresso
+
         setupProgressoListeners();
 
     } catch (error) {
@@ -150,62 +134,19 @@ btnSalvar.addEventListener("click", async () => {
     }
 }
 
-    const botao = document.getElementById("botao_gerar_roteiro");
+const botao = document.getElementById("botao_gerar_roteiro");
 
-    if (botao) {
-        console.log("Botão encontrado no HTML!");
-        
-        botao.addEventListener("click", (e) => {
-            e.preventDefault();
-            console.log("CLIQUEI NO BOTÃO!"); 
-            GerarAgenda();
-        });
-    } else {
-        console.error("ERRO GRAVE: O JavaScript não achou o botão com id 'botao_gerar_roteiro'");
-    }
+if (botao) {
+    botao.addEventListener("click", (e) => {
+        e.preventDefault();
+        GerarAgenda();
+    });
+} else {
+    console.error("ERRO GRAVE: botão 'botao_gerar_roteiro' não encontrado");
+}
 
 function fazerLogout() {
     localStorage.removeItem("access_token"); 
     alert("Logout realizado com sucesso.");
     window.location.href = "login.html"; 
 }
-
-function setupProgressoListeners() {
-    // 1. get todos os checkboxes que acabámos de criar
-    const checkboxes = document.querySelectorAll(".roteiro-checkbox");
-    
-    // 2. get os elementos da UI que queremos atualizar
-    const progressoTexto = document.getElementById("progresso-texto");
-    const progressoPreenchimento = document.getElementById("progresso-preenchimento");
-    
-    const totalDias = checkboxes.length; // get total de dias (ex: 10)
-
-    // 3. evento clicável
-    function atualizarProgresso() {
-        // get quantos checkboxes estão :checked (marcados)
-        const diasConcluidos = document.querySelectorAll(".roteiro-checkbox:checked").length;
-        
-        // get percentagem
-        const percentagem = (diasConcluidos / totalDias) * 100;
-
-        // att UI
-        progressoTexto.textContent = `${diasConcluidos}/${totalDias} dias concluídos`;
-        progressoPreenchimento.style.width = `${percentagem}%`;
-    }
-
-    // 4. add "ouvinte" de clique a CADA checkbox
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener("click", atualizarProgresso);
-    });
-}
-
-window.addEventListener("beforeunload", () => {
-    if (roteiroTemporario) {
-        // apaga visualmente
-        const card = document.getElementById("roteiro-container");
-        if (card) card.remove();
-
-        // e descarta o roteiro temporário
-        roteiroTemporario = null;
-    }
-});

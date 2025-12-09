@@ -1,3 +1,5 @@
+const BASE_URL = "https://api-desenvolvimento-de-software-production.up.railway.app";
+
 // ==========================================
 // CARREGAR ROTEIROS AO ENTRAR NA PÁGINA
 // ==========================================
@@ -12,7 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/rotinas/listar", {
+    const response = await fetch(`${BASE_URL}/rotinas/listar`, {
       method: 'GET',
       headers: {
         "Content-Type": "application/json",
@@ -76,9 +78,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       containerDePlanos.appendChild(card);
     });
 
-    // ==========================================
-    // EVENTOS DO BOTÃO "VER PLANO"
-    // ==========================================
     document.querySelectorAll(".btn-card").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
@@ -157,7 +156,7 @@ function abrirModalPlano(roteiro, cardElement) {
   atualizarTudo();
 
   // ==========================================
-  // BOTÃO "CONCLUÍDO"
+  // CONCLUIR
   // ==========================================
   const btnConcluir = document.querySelector(".btn-concluido");
 
@@ -170,7 +169,7 @@ function abrirModalPlano(roteiro, cardElement) {
       atualizarTudo();
 
       try {
-        await fetch(`http://127.0.0.1:8000/rotinas/${roteiro.id}/concluir`, {
+        await fetch(`${BASE_URL}/rotinas/${roteiro.id}/concluir`, {
           method: "PATCH",
           headers: { "Authorization": "Bearer " + token }
         });
@@ -184,7 +183,7 @@ function abrirModalPlano(roteiro, cardElement) {
   }
 
   // ==========================================
-  // BOTÃO "EXCLUIR PLANO" (DO MODAL)
+  // EXCLUIR
   // ==========================================
   const btnExcluirModal = document.querySelector(".btn-excluir");
 
@@ -196,7 +195,7 @@ function abrirModalPlano(roteiro, cardElement) {
       if (!confirm("Deseja realmente excluir este plano?")) return;
 
       try {
-        const response = await fetch(`http://127.0.0.1:8000/rotinas/${roteiro.id}/excluir`, {
+        const response = await fetch(`${BASE_URL}/rotinas/${roteiro.id}/excluir`, {
           method: "DELETE",
           headers: { "Authorization": "Bearer " + token }
         });

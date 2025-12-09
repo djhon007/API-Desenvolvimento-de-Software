@@ -1,3 +1,5 @@
+const BASE_URL = "https://api-desenvolvimento-de-software-production.up.railway.app";
+
 document.addEventListener("DOMContentLoaded", () => {
     
     const registroForm = document.getElementById("registro-form");
@@ -13,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const email = document.getElementById("email").value;
         const senha = document.getElementById("senha").value;
 
-        const URL = "http://127.0.0.1:8000/auth/criar_conta";
+        const URL = `${BASE_URL}/auth/criar_conta`;
 
         const body = {
             nome: nome,
