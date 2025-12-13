@@ -1,235 +1,169 @@
+# Lumin — Plataforma de Organização Inteligente de Estudos
 
+O **Lumin** é uma plataforma web desenvolvida para auxiliar estudantes na organização e no planejamento de estudos de forma inteligente.  
+Inicialmente concebido como uma API simples de geração de planos de estudo, o projeto evoluiu para uma plataforma completa, com autenticação de usuários, persistência de dados e arquitetura modular.
 
-### Commit 03/11/2025 – Integração de Autenticação e Persistência de Dados
-
----
-
-## Visão Geral
-
-Este commit marca uma grande evolução do projeto **Lumin**, que deixa de ser uma API simples de geração de planos de estudo para se tornar uma **plataforma completa**, com:
-
-* Autenticação de usuários via JWT
-* Persistência de dados em banco de dados SQLite
-* Estrutura modular de rotas e dependências
-* Configurações centralizadas via `.env`
-
-Além disso, o `contribuiting.md` foi atualizado para refletir o novo stack e fluxo de desenvolvimento.
+O sistema é dividido em **frontend** e **backend**, implantados separadamente em ambientes de produção.
 
 ---
 
-## Estrutura do Projeto
+## Arquitetura do Projeto
 
-```bash
-.
+O projeto segue uma arquitetura **cliente-servidor**, com separação clara entre interface e lógica de negócio.
+
+### Componentes
+
+- **Frontend:** aplicação web desenvolvida em HTML, CSS e JavaScript
+- **Backend:** API REST desenvolvida em Python com FastAPI
+- **Banco de dados:** SQLite
+- **Autenticação:** JSON Web Token (JWT)
+
+### Deploy
+
+- **Frontend:** Vercel
+- **Backend:** Railway
+
+---
+
+## Evolução do Projeto (Commit 03/11/2025)
+
+Este commit representa uma etapa importante na evolução do projeto **Lumin**, consolidando sua transformação em uma plataforma completa. As principais melhorias incluem:
+
+- Implementação de autenticação de usuários utilizando JWT
+- Persistência de dados em banco SQLite
+- Estrutura modular de rotas e dependências
+- Centralização de configurações sensíveis por meio do arquivo `.env`
+- Atualização do arquivo `contributing.md` para refletir o novo stack e fluxo de desenvolvimento
+
+---
+
+## Estrutura do Repositório
+
+```text
+API-Desenvolvimento-de-Software/
+│
+├── frontend/
+│   ├── index.html
+│   ├── login.html
+│   ├── registro.html
+│   ├── historico.html
+│   ├── style.css
+│   ├── script.js
+│   ├── login.js
+│   ├── registro.js
+│   ├── historico.js
+│   ├── imagens/
+│   ├── package.json
+│   └── README.md
+│
 ├── main.py
+│
 ├── rotas/
 │   ├── auth.py
 │   └── rotinas.py
+│
 ├── codigos_apoio/
 │   ├── config.py
 │   ├── dependences.py
 │   ├── schemas.py
 │   └── security.py
+│
 ├── database/
 │   └── models.py
+│
+├── alembic/
+├── tests/
+├── logs/
+├── venv/
 ├── .env
-└── contribuiting.md
+└── README.md
+
 ```
 
----
+## Tecnologias Utilizadas
 
-## Autenticação e Autorização (`rotas/auth.py`)
+### Frontend
+- HTML5  
+- CSS3  
+- JavaScript (Vanilla)
 
-Implementada autenticação completa com **JWT (JSON Web Token)**.
+### Backend
+- Python  
+- FastAPI  
+- SQLAlchemy  
+- Alembic  
 
-### Endpoints Principais
-
-* `POST /auth/criar_conta` → Cria novo usuário com senha criptografada
-* `POST /auth/login` e `/auth/login-form` → Login e geração de *access* e *refresh tokens*
-* `POST /auth/refresh` → Renova o *access token*
-
-### Tecnologias Utilizadas
-
-* **bcrypt** → Criptografia de senha
-* **python-jose** → Geração e validação de tokens JWT
-* **OAuth2PasswordBearer** → Controle de sessão e autenticação via header Bearer
-
----
-
-## Rotinas de Estudo (`rotas/rotinas.py`)
-
-As rotinas agora são **associadas a usuários autenticados** e **armazenadas no banco de dados**.
-
-### Endpoints
-
-* `POST /rotinas/gerar-agenda` → Gera plano via Gemini e salva no banco
-* `GET /rotinas/listar` → Lista todas as rotinas criadas pelo usuário logado
-
-### Funcionalidades
-
-* Conversão automática de prazos para dias
-* Armazenamento com título, conteúdo, data e ID do usuário
-* Retorno formatado via `RotinaResponse`
+### Infraestrutura
+- Vercel (Frontend)  
+- Railway (Backend)  
 
 ---
 
-## Banco de Dados (`database/models.py`)
+## Autenticação e Autorização
 
-Implementação com **SQLAlchemy ORM** para abstração e relações.
+A autenticação da aplicação é baseada em **JSON Web Token (JWT)**, garantindo acesso seguro às rotas protegidas da API.
 
-### Tabelas Criadas
+### Principais Endpoints
 
-#### `Usuario`
+- `POST /auth/criar_conta`  
+  Criação de novos usuários com senha criptografada
 
-* `id`, `nome`, `email`, `senha`, `ativo`, `admin`
-* Relacionamento com `Rotina`
+- `POST /auth/login`  
+  Login via JSON
 
-#### `Rotina`
+- `POST /auth/login-form`  
+  Login via formulário utilizando `OAuth2PasswordRequestForm`
 
-* `id`, `titulo`, `conteudo`, `criado_em`, `id_usuario`
+- `POST /auth/refresh`  
+  Renovação do token de acesso
 
-Banco padrão:
-
-```bash
-sqlite:///database/banco.db
-```
-
----
-
-## Configurações e Dependências
-
-### `codigos_apoio/config.py`
-
-Gerencia variáveis de ambiente:
-
-```python
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM", "HS256")
-ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
-```
-
-### `codigos_apoio/dependences.py`
-
-* `pegar_sessao()` → Cria sessão SQLAlchemy
-* `verificar_token()` → Valida JWT e retorna usuário autenticado
-
-### `codigos_apoio/security.py`
-
-* Implementa criptografia com `bcrypt`
+As rotas protegidas utilizam dependências de autenticação para validação do token JWT.
 
 ---
 
-## Atualizações no `main.py`
+## Build
 
-O arquivo principal agora é o ponto de entrada da aplicação, registrando as rotas e configurando o CORS.
+### Frontend
 
-```python
-app.include_router(auth_router)
-app.include_router(rotinas_router)
-```
+O frontend utiliza apenas HTML, CSS e JavaScript puro, não sendo necessário processo de build.  
+Os arquivos estão prontos para execução em ambiente de produção.
 
-Permite acesso ao frontend com:
+### Backend
 
-```python
-allow_origins=["http://localhost:8080", "http://127.0.0.1:8080"]
-```
+O backend não necessita de build, sendo executado diretamente pelo servidor Python.
 
 ---
 
-## Atualização do `contribuiting.md`
+## Deploy
 
-O guia foi reformulado para refletir o novo ambiente.
+### Frontend — Vercel
 
-### Novas Dependências
+O frontend foi implantado na plataforma **Vercel**, conectando diretamente o repositório do GitHub.
 
-* `SQLAlchemy`
-* `alembic`
-* `passlib[bcrypt]`
-
-### Mudanças
-
-* Instalação via `requirements.txt`
-* Inclusão de `SECRET_KEY` no `.env`
-* Simplificação das seções de PR e versionamento
+**Passos gerais:**
+1. Importar o repositório na Vercel  
+2. Selecionar a pasta `frontend/` como diretório raiz  
+3. Manter as configurações padrão  
+4. Concluir o deploy  
 
 ---
 
-## Arquivo `.env`
+### Backend — Railway
 
-Novo formato de variáveis:
+O backend foi implantado na plataforma **Railway**.
 
-```bash
-GENAI_API_KEY="sua_chave_aqui"
-SECRET_KEY="sua_senha_aqui"
-```
-
----
-
-## Requisitos Técnicos
-
-**Python:** 3.10+
-
-### Dependências
-
-```bash
-fastapi
-uvicorn
-google-genai
-python-dotenv
-pydantic
-sqlalchemy
-alembic
-passlib[bcrypt]
-python-jose
-```
-
-### Instalação
-
-```bash
-pip install -r requirements.txt
-```
+**Passos gerais:**
+1. Conectar o repositório do GitHub ao Railway  
+2. Configurar as variáveis de ambiente no arquivo `.env`  
+3. Definir o comando de inicialização da aplicação  
+4. Publicar o serviço  
 
 ---
 
-## 💻 Como Rodar o Projeto
+## Integração Frontend e Backend
 
-1. Criar ambiente virtual:
+O frontend consome a API REST exposta pelo backend por meio de requisições HTTP.  
+A URL da API é configurada diretamente nos arquivos JavaScript do frontend.
 
-   ```bash
-   python -m venv venv
-   source venv/bin/activate
-   ```
-2. Configurar o arquivo `.env`
-3. Iniciar o backend:
-
-   ```bash
-   uvicorn main:app --reload
-   ```
-4. Iniciar o frontend (na pasta `/frontend`):
-
-   ```bash
-   python3 -m http.server 8080
-   ```
-5. Acessar:
-
-   ```bash
-   http://127.0.0.1:8080
-   ```
-
----
-
-## Autor:
-
-* **Gabriel Mezzalira Teixeira Batista do Nascimento**
-
----
-
-## Resumo das Mudanças
-
-* Criação de `rotas/auth.py` com autenticação JWT
-* Integração com SQLAlchemy e banco SQLite
-* Criação de `rotas/rotinas.py` com persistência de planos
-* Criptografia de senhas com bcrypt
-* Refatoração do `main.py` para modularização
-* Atualização do `contribuiting.md`
-* Novo `.env` com `SECRET_KEY`
+```javascript
+const BASE_URL = "https://api-desenvolvimento-de-software-production.up.railway.app";
