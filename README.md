@@ -23,19 +23,6 @@ O projeto segue uma arquitetura **cliente-servidor**, com separação clara entr
 - **Frontend:** Vercel
 - **Backend:** Railway
 
----
-
-## Evolução do Projeto (Commit 03/11/2025)
-
-Este commit representa uma etapa importante na evolução do projeto **Lumin**, consolidando sua transformação em uma plataforma completa. As principais melhorias incluem:
-
-- Implementação de autenticação de usuários utilizando JWT
-- Persistência de dados em banco SQLite
-- Estrutura modular de rotas e dependências
-- Centralização de configurações sensíveis por meio do arquivo `.env`
-- Atualização do arquivo `contributing.md` para refletir o novo stack e fluxo de desenvolvimento
-
----
 
 ## Estrutura do Repositório
 
